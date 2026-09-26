@@ -128,7 +128,7 @@ function VideoDetail() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <h1 className="text-2xl font-semibold tracking-tight">{video.title}</h1>
-          <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
             <span>{SOURCE_LABELS[video.source as keyof typeof SOURCE_LABELS] ?? video.source}</span>
             <span>{formatDuration(video.duration_seconds)}</span>
             <Badge variant="secondary">{VIDEO_STATUS_LABELS[video.status] ?? video.status}</Badge>
