@@ -135,7 +135,7 @@ function VideoDetail() {
             <a href={video.url} target="_blank" rel="noreferrer" className="underline">
               Open original
             </a>
-          </p>
+          </div>
           {video.error_message && <p className="mt-2 text-sm text-destructive">{video.error_message}</p>}
         </div>
         <Button
