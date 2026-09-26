@@ -10,33 +10,144 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedClipsRouteImport } from './routes/_authenticated/clips'
+import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated/create'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
+import { Route as AuthenticatedUsageRouteImport } from './routes/_authenticated/usage'
+import { Route as AuthenticatedVideosIndexRouteImport } from './routes/_authenticated/videos.index'
+import { Route as AuthenticatedVideosVideoIdRouteImport } from './routes/_authenticated/videos.$videoId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedClipsRoute = AuthenticatedClipsRouteImport.update({
+  id: '/clips',
+  path: '/clips',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCreateRoute = AuthenticatedCreateRouteImport.update({
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUsageRoute = AuthenticatedUsageRouteImport.update({
+  id: '/usage',
+  path: '/usage',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedVideosIndexRoute =
+  AuthenticatedVideosIndexRouteImport.update({
+    id: '/videos/',
+    path: '/videos/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedVideosVideoIdRoute =
+  AuthenticatedVideosVideoIdRouteImport.update({
+    id: '/videos/$videoId',
+    path: '/videos/$videoId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/clips': typeof AuthenticatedClipsRoute
+  '/create': typeof AuthenticatedCreateRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/projects': typeof AuthenticatedProjectsRoute
+  '/usage': typeof AuthenticatedUsageRoute
+  '/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
+  '/videos/': typeof AuthenticatedVideosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/clips': typeof AuthenticatedClipsRoute
+  '/create': typeof AuthenticatedCreateRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/projects': typeof AuthenticatedProjectsRoute
+  '/usage': typeof AuthenticatedUsageRoute
+  '/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
+  '/videos': typeof AuthenticatedVideosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/clips': typeof AuthenticatedClipsRoute
+  '/_authenticated/create': typeof AuthenticatedCreateRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/projects': typeof AuthenticatedProjectsRoute
+  '/_authenticated/usage': typeof AuthenticatedUsageRoute
+  '/_authenticated/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
+  '/_authenticated/videos/': typeof AuthenticatedVideosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/clips'
+    | '/create'
+    | '/dashboard'
+    | '/projects'
+    | '/usage'
+    | '/videos/$videoId'
+    | '/videos/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/clips'
+    | '/create'
+    | '/dashboard'
+    | '/projects'
+    | '/usage'
+    | '/videos/$videoId'
+    | '/videos'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/clips'
+    | '/_authenticated/create'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/projects'
+    | '/_authenticated/usage'
+    | '/_authenticated/videos/$videoId'
+    | '/_authenticated/videos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +159,99 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/clips': {
+      id: '/_authenticated/clips'
+      path: '/clips'
+      fullPath: '/clips'
+      preLoaderRoute: typeof AuthenticatedClipsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/create': {
+      id: '/_authenticated/create'
+      path: '/create'
+      fullPath: '/create'
+      preLoaderRoute: typeof AuthenticatedCreateRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/projects': {
+      id: '/_authenticated/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof AuthenticatedProjectsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/usage': {
+      id: '/_authenticated/usage'
+      path: '/usage'
+      fullPath: '/usage'
+      preLoaderRoute: typeof AuthenticatedUsageRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/videos/': {
+      id: '/_authenticated/videos/'
+      path: '/videos'
+      fullPath: '/videos/'
+      preLoaderRoute: typeof AuthenticatedVideosIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/videos/$videoId': {
+      id: '/_authenticated/videos/$videoId'
+      path: '/videos/$videoId'
+      fullPath: '/videos/$videoId'
+      preLoaderRoute: typeof AuthenticatedVideosVideoIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedClipsRoute: typeof AuthenticatedClipsRoute
+  AuthenticatedCreateRoute: typeof AuthenticatedCreateRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
+  AuthenticatedUsageRoute: typeof AuthenticatedUsageRoute
+  AuthenticatedVideosVideoIdRoute: typeof AuthenticatedVideosVideoIdRoute
+  AuthenticatedVideosIndexRoute: typeof AuthenticatedVideosIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedClipsRoute: AuthenticatedClipsRoute,
+  AuthenticatedCreateRoute: AuthenticatedCreateRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
+  AuthenticatedUsageRoute: AuthenticatedUsageRoute,
+  AuthenticatedVideosVideoIdRoute: AuthenticatedVideosVideoIdRoute,
+  AuthenticatedVideosIndexRoute: AuthenticatedVideosIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
