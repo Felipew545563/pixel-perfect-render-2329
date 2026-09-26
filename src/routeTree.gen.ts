@@ -15,6 +15,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedClipsRouteImport } from './routes/_authenticated/clips'
 import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated/create'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
+import { Route as AuthenticatedUsageRouteImport } from './routes/_authenticated/usage'
 import { Route as AuthenticatedVideosIndexRouteImport } from './routes/_authenticated/videos.index'
 import { Route as AuthenticatedVideosVideoIdRouteImport } from './routes/_authenticated/videos.$videoId'
 
@@ -47,6 +49,16 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUsageRoute = AuthenticatedUsageRouteImport.update({
+  id: '/usage',
+  path: '/usage',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedVideosIndexRoute =
   AuthenticatedVideosIndexRouteImport.update({
     id: '/videos/',
@@ -66,6 +78,8 @@ export interface FileRoutesByFullPath {
   '/clips': typeof AuthenticatedClipsRoute
   '/create': typeof AuthenticatedCreateRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/projects': typeof AuthenticatedProjectsRoute
+  '/usage': typeof AuthenticatedUsageRoute
   '/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
   '/videos/': typeof AuthenticatedVideosIndexRoute
 }
@@ -75,6 +89,8 @@ export interface FileRoutesByTo {
   '/clips': typeof AuthenticatedClipsRoute
   '/create': typeof AuthenticatedCreateRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/projects': typeof AuthenticatedProjectsRoute
+  '/usage': typeof AuthenticatedUsageRoute
   '/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
   '/videos': typeof AuthenticatedVideosIndexRoute
 }
@@ -86,6 +102,8 @@ export interface FileRoutesById {
   '/_authenticated/clips': typeof AuthenticatedClipsRoute
   '/_authenticated/create': typeof AuthenticatedCreateRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/projects': typeof AuthenticatedProjectsRoute
+  '/_authenticated/usage': typeof AuthenticatedUsageRoute
   '/_authenticated/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
   '/_authenticated/videos/': typeof AuthenticatedVideosIndexRoute
 }
@@ -97,6 +115,8 @@ export interface FileRouteTypes {
     | '/clips'
     | '/create'
     | '/dashboard'
+    | '/projects'
+    | '/usage'
     | '/videos/$videoId'
     | '/videos/'
   fileRoutesByTo: FileRoutesByTo
@@ -106,6 +126,8 @@ export interface FileRouteTypes {
     | '/clips'
     | '/create'
     | '/dashboard'
+    | '/projects'
+    | '/usage'
     | '/videos/$videoId'
     | '/videos'
   id:
@@ -116,6 +138,8 @@ export interface FileRouteTypes {
     | '/_authenticated/clips'
     | '/_authenticated/create'
     | '/_authenticated/dashboard'
+    | '/_authenticated/projects'
+    | '/_authenticated/usage'
     | '/_authenticated/videos/$videoId'
     | '/_authenticated/videos/'
   fileRoutesById: FileRoutesById
@@ -170,6 +194,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/projects': {
+      id: '/_authenticated/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof AuthenticatedProjectsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/usage': {
+      id: '/_authenticated/usage'
+      path: '/usage'
+      fullPath: '/usage'
+      preLoaderRoute: typeof AuthenticatedUsageRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/videos/': {
       id: '/_authenticated/videos/'
       path: '/videos'
@@ -191,6 +229,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedClipsRoute: typeof AuthenticatedClipsRoute
   AuthenticatedCreateRoute: typeof AuthenticatedCreateRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
+  AuthenticatedUsageRoute: typeof AuthenticatedUsageRoute
   AuthenticatedVideosVideoIdRoute: typeof AuthenticatedVideosVideoIdRoute
   AuthenticatedVideosIndexRoute: typeof AuthenticatedVideosIndexRoute
 }
@@ -199,6 +239,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedClipsRoute: AuthenticatedClipsRoute,
   AuthenticatedCreateRoute: AuthenticatedCreateRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
+  AuthenticatedUsageRoute: AuthenticatedUsageRoute,
   AuthenticatedVideosVideoIdRoute: AuthenticatedVideosVideoIdRoute,
   AuthenticatedVideosIndexRoute: AuthenticatedVideosIndexRoute,
 }
