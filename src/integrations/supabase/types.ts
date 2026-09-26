@@ -14,7 +14,249 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clips: {
+        Row: {
+          aspect_ratio: string
+          caption_instagram: string | null
+          caption_tiktok: string | null
+          clarity_score: number | null
+          clip_score: number | null
+          created_at: string
+          description: string | null
+          emotion_score: number | null
+          end_seconds: number
+          hashtags: string[]
+          hook: string | null
+          hook_score: number | null
+          id: string
+          position: number
+          reasoning: string | null
+          start_seconds: number
+          status: string
+          title: string
+          transcript_excerpt: string | null
+          updated_at: string
+          user_id: string
+          video_id: string
+          youtube_title: string | null
+        }
+        Insert: {
+          aspect_ratio?: string
+          caption_instagram?: string | null
+          caption_tiktok?: string | null
+          clarity_score?: number | null
+          clip_score?: number | null
+          created_at?: string
+          description?: string | null
+          emotion_score?: number | null
+          end_seconds?: number
+          hashtags?: string[]
+          hook?: string | null
+          hook_score?: number | null
+          id?: string
+          position?: number
+          reasoning?: string | null
+          start_seconds?: number
+          status?: string
+          title?: string
+          transcript_excerpt?: string | null
+          updated_at?: string
+          user_id: string
+          video_id: string
+          youtube_title?: string | null
+        }
+        Update: {
+          aspect_ratio?: string
+          caption_instagram?: string | null
+          caption_tiktok?: string | null
+          clarity_score?: number | null
+          clip_score?: number | null
+          created_at?: string
+          description?: string | null
+          emotion_score?: number | null
+          end_seconds?: number
+          hashtags?: string[]
+          hook?: string | null
+          hook_score?: number | null
+          id?: string
+          position?: number
+          reasoning?: string | null
+          start_seconds?: number
+          status?: string
+          title?: string
+          transcript_excerpt?: string | null
+          updated_at?: string
+          user_id?: string
+          video_id?: string
+          youtube_title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clips_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          credits_minutes: number
+          display_name: string | null
+          id: string
+          plan: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credits_minutes?: number
+          display_name?: string | null
+          id: string
+          plan?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credits_minutes?: number
+          display_name?: string | null
+          id?: string
+          plan?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      usage_events: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          minutes_used: number
+          note: string | null
+          user_id: string
+          video_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind?: string
+          minutes_used?: number
+          note?: string | null
+          user_id: string
+          video_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          minutes_used?: number
+          note?: string | null
+          user_id?: string
+          video_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_events_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      videos: {
+        Row: {
+          author: string | null
+          created_at: string
+          duration_seconds: number | null
+          error_message: string | null
+          id: string
+          project_id: string | null
+          source: string
+          source_id: string | null
+          status: string
+          thumbnail_url: string | null
+          title: string
+          transcript: string | null
+          transcript_source: string | null
+          updated_at: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          author?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          error_message?: string | null
+          id?: string
+          project_id?: string | null
+          source?: string
+          source_id?: string | null
+          status?: string
+          thumbnail_url?: string | null
+          title?: string
+          transcript?: string | null
+          transcript_source?: string | null
+          updated_at?: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          author?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          error_message?: string | null
+          id?: string
+          project_id?: string | null
+          source?: string
+          source_id?: string | null
+          status?: string
+          thumbnail_url?: string | null
+          title?: string
+          transcript?: string | null
+          transcript_source?: string | null
+          updated_at?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "videos_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
