@@ -34,7 +34,7 @@ async function runModel(instructions: string, prompt: string, signal?: AbortSign
 
   const response = await fetch(GATEWAY_URL, {
     method: "POST",
-    signal,
+    signal: signal ?? null,
     headers: {
       "Content-Type": "application/json",
       "Lovable-API-Key": apiKey,

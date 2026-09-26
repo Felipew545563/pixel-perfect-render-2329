@@ -263,7 +263,7 @@ export const updateVideo = createServerFn({ method: "POST" })
       patch["status"] = transcript ? "pending" : "awaiting_transcript";
       patch["error_message"] = transcript ? null : "Add the transcript so the AI can find the best moments.";
     }
-    const { error } = await context.supabase.from("videos").update(patch).eq("id", data.id);
+    const { error } = await context.supabase.from("videos").update(patch as never).eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -438,7 +438,7 @@ export const updateClip = createServerFn({ method: "POST" })
     if (data.hashtags !== undefined) patch["hashtags"] = data.hashtags;
     if (data.aspectRatio !== undefined) patch["aspect_ratio"] = data.aspectRatio;
 
-    const { error } = await context.supabase.from("clips").update(patch).eq("id", data.id);
+    const { error } = await context.supabase.from("clips").update(patch as never).eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

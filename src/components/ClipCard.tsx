@@ -64,7 +64,7 @@ export function ClipCard({
   busy,
 }: {
   clip: ClipRow;
-  video?: ClipVideo;
+  video?: ClipVideo | undefined;
   onSave: (patch: {
     id: string;
     title: string;
