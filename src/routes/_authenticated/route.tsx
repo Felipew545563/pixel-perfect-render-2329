@@ -85,6 +85,7 @@ function AuthenticatedLayout() {
         </nav>
         <div className="hidden px-4 py-4 lg:block">
           <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
+          <TutorialButton onClick={() => setTourOpen(true)} />
           <Button
             variant="ghost"
             size="sm"
@@ -101,6 +102,7 @@ function AuthenticatedLayout() {
       <main className="min-w-0 flex-1 px-4 py-6 lg:px-8">
         <Outlet />
       </main>
+      <OnboardingTour open={tourOpen} onOpenChange={setTourOpen} />
     </div>
   );
 }
