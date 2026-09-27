@@ -52,7 +52,7 @@ const STEPS = [
 
 export function OnboardingTour({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [step, setStep] = useState(0);
-  const current = STEPS[step];
+  const current = STEPS[Math.min(step, STEPS.length - 1)] ?? STEPS[0];
   const isLast = step === STEPS.length - 1;
 
   const close = () => {
