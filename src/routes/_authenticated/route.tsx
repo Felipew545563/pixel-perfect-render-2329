@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   FolderKanban,
@@ -12,6 +12,7 @@ import {
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { OnboardingTour, TOUR_STORAGE_KEY, TutorialButton } from "@/components/OnboardingTour";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -32,10 +33,20 @@ function AuthenticatedLayout() {
   const { session, loading, user } = useAuth();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const [tourOpen, setTourOpen] = useState(false);
+  const [tourChecked, setTourChecked] = useState(false);
 
   useEffect(() => {
     if (!loading && !session) navigate({ to: "/auth" });
-  }, [loading, session, navigate]);
+    if (!loading && session && !tourChecked) {
+      setTourChecked(true);
+      try {
+        if (!localStorage.getItem(TOUR_STORAGE_KEY)) setTourOpen(true);
+      } catch {
+        // storage unavailable — don't block the app
+      }
+    }
+  }, [loading, session, navigate, tourChecked]);
 
   if (loading || !session) {
     return (
@@ -74,6 +85,7 @@ function AuthenticatedLayout() {
         </nav>
         <div className="hidden px-4 py-4 lg:block">
           <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
+          <TutorialButton onClick={() => setTourOpen(true)} />
           <Button
             variant="ghost"
             size="sm"
@@ -90,6 +102,7 @@ function AuthenticatedLayout() {
       <main className="min-w-0 flex-1 px-4 py-6 lg:px-8">
         <Outlet />
       </main>
+      <OnboardingTour open={tourOpen} onOpenChange={setTourOpen} />
     </div>
   );
 }
