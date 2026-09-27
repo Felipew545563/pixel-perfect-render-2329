@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useState } from "react";
 import {
   LayoutDashboard,
   FolderKanban,
@@ -12,6 +12,7 @@ import {
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { OnboardingTour, TOUR_STORAGE_KEY, TutorialButton } from "@/components/OnboardingTour";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +33,8 @@ function AuthenticatedLayout() {
   const { session, loading, user } = useAuth();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const [tourOpen, setTourOpen] = useState(false);
+  const [tourChecked, setTourChecked] = useState(false);
 
   useEffect(() => {
     if (!loading && !session) navigate({ to: "/auth" });
