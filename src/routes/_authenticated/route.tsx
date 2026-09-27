@@ -38,7 +38,15 @@ function AuthenticatedLayout() {
 
   useEffect(() => {
     if (!loading && !session) navigate({ to: "/auth" });
-  }, [loading, session, navigate]);
+    if (!loading && session && !tourChecked) {
+      setTourChecked(true);
+      try {
+        if (!localStorage.getItem(TOUR_STORAGE_KEY)) setTourOpen(true);
+      } catch {
+        // storage unavailable — don't block the app
+      }
+    }
+  }, [loading, session, navigate, tourChecked]);
 
   if (loading || !session) {
     return (
