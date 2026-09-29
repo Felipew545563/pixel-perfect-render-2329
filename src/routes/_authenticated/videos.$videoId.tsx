@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ClipCard, type ClipRow } from "@/components/ClipCard";
 import { ClipExporter } from "@/components/ClipExporter";
+import { AutoAnalyzer } from "@/components/AutoAnalyzer";
 import { SOURCE_LABELS, VIDEO_STATUS_LABELS, formatDuration } from "@/lib/sources";
 
 export const Route = createFileRoute("/_authenticated/videos/$videoId")({
