@@ -35,7 +35,7 @@ async function pickLightVariant(masterUrl: string): Promise<{ url: string; durat
   const lines = (await master.text()).split(/\r?\n/);
   let best: { url: string; bw: number; audio: boolean } | null = null;
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+    const line = lines[i] ?? "";
     if (!line.startsWith("#EXT-X-STREAM-INF")) continue;
     const uri = lines[i + 1]?.trim();
     if (!uri || uri.startsWith("#")) continue;
@@ -166,9 +166,9 @@ export async function resolveAudioLink(input: string): Promise<ResolvedAudio> {
   const host = target.hostname.replace(/^www\.|^m\./, "");
   try {
     const twitch = host === "twitch.tv" ? /\/videos\/(\d+)/.exec(target.pathname) : null;
-    if (twitch) return await resolveTwitchVod(twitch[1]);
+    if (twitch) return await resolveTwitchVod(twitch[1]!);
     const kick = host === "kick.com" ? /\/videos\/([0-9a-f-]{36})/i.exec(target.pathname) : null;
-    if (kick) return await resolveKickVod(target, kick[1]);
+    if (kick) return await resolveKickVod(target, kick[1]!);
   } catch (error) {
     errors.push(`${host}: ${error instanceof Error ? error.message : "falhou"}`);
   }
