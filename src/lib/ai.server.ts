@@ -155,7 +155,7 @@ export async function findClips(
     "Avoid silence, filler and segments that need missing context.",
     LENGTH_HINTS[options.lengthPreset],
     "Scores are internal quality estimates from 0 to 100, never a guarantee of virality.",
-    `Write all generated text in ${options.language}.`,
+    `Write all generated text in ${options.language}. When writing Portuguese, always use European Portuguese (pt-PT), never Brazilian Portuguese.`,
     "Return ONLY a JSON array, no prose, no markdown fences. Each item has exactly these keys:",
     '"title", "hook", "description", "start_seconds", "end_seconds", "clip_score", "hook_score", "emotion_score", "clarity_score", "reasoning", "transcript_excerpt", "hashtags" (array of strings without #), "caption_tiktok", "caption_instagram", "youtube_title".',
     "Timestamps are seconds from the start of the video. If the transcript has timecodes, use them; otherwise estimate from reading pace (~150 words per minute).",
