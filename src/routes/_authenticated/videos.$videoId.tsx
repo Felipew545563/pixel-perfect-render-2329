@@ -245,7 +245,8 @@ function VideoDetail() {
         </div>
         {clips.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            Ainda não existem clipes. Guarde a transcrição e execute a análise acima.
+            Ainda não existem clipes. Escolha o ficheiro do vídeo em «Análise automática» e carregue em «Analisar e
+            encontrar clipes».
           </p>
         ) : (
           <div className="grid gap-3">
