@@ -5,32 +5,10 @@ import { Download, Scissors, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { formatTimecode } from "@/lib/sources";
+import { getFFmpeg } from "@/lib/media-analysis";
 import type { ClipRow } from "@/components/ClipCard";
 
 type Result = { id: string; name: string; url: string; size: number };
-
-const CORE_BASE = "https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm";
-
-// ffmpeg is browser-only; loaded lazily after the user clicks.
-type FF = import("@ffmpeg/ffmpeg").FFmpeg;
-let ffmpegPromise: Promise<FF> | null = null;
-async function getFFmpeg(): Promise<FF> {
-  if (!ffmpegPromise) {
-    ffmpegPromise = (async () => {
-      const [{ FFmpeg }, { toBlobURL }] = await Promise.all([import("@ffmpeg/ffmpeg"), import("@ffmpeg/util")]);
-      const ff = new FFmpeg();
-      await ff.load({
-        coreURL: await toBlobURL(`${CORE_BASE}/ffmpeg-core.js`, "text/javascript"),
-        wasmURL: await toBlobURL(`${CORE_BASE}/ffmpeg-core.wasm`, "application/wasm"),
-      });
-      return ff;
-    })().catch((err) => {
-      ffmpegPromise = null;
-      throw err;
-    });
-  }
-  return ffmpegPromise;
-}
 
 const slug = (s: string) =>
   s
