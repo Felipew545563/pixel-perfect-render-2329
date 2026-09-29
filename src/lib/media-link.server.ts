@@ -7,10 +7,11 @@
  */
 
 const DEFAULT_INSTANCES = [
+  "https://co.otomir23.me",
   "https://cobalt-api.kwiatekmiki.com",
   "https://cobalt-backend.canine.tools",
-  "https://co.otomir23.me",
 ];
+
 
 const DIRECT_AUDIO = /\.(mp3|m4a|aac|wav|ogg|opus|flac|mp4|m4v|mov|mkv|webm)(\?|$)/i;
 
