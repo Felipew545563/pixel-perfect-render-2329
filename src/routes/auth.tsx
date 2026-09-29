@@ -25,6 +25,18 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+function authErrorMessage(error: unknown): string {
+  const message = error instanceof Error ? error.message : "";
+  const translations: Record<string, string> = {
+    "Invalid login credentials": "O e-mail ou a palavra-passe estão incorretos.",
+    "Email not confirmed": "Confirme o seu e-mail antes de iniciar sessão.",
+    "User already registered": "Já existe uma conta com este e-mail.",
+    "Password should be at least 6 characters": "A palavra-passe deve ter, pelo menos, 6 caracteres.",
+    "Unable to validate email address: invalid format": "Introduza um endereço de e-mail válido.",
+  };
+  return translations[message] ?? "Ocorreu um erro. Tente novamente.";
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const { session, loading } = useAuth();
@@ -64,7 +76,7 @@ function AuthPage() {
         navigate({ to: "/dashboard" });
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Ocorreu um erro.");
+      toast.error(authErrorMessage(error));
     } finally {
       setBusy(false);
     }
@@ -92,7 +104,7 @@ function AuthPage() {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth`,
     });
-    if (error) toast.error(error.message);
+    if (error) toast.error(authErrorMessage(error));
     else toast.success("E-mail de reposição da palavra-passe enviado.");
   }
 
