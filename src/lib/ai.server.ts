@@ -28,9 +28,19 @@ function gatewayError(message: string, status: number): GatewayError {
 }
 
 /** Streams a Responses call and returns the accumulated text. */
-async function runModel(instructions: string, prompt: string, signal?: AbortSignal): Promise<string> {
+async function runModel(
+  instructions: string,
+  prompt: string,
+  images: string[] = [],
+  signal?: AbortSignal,
+): Promise<string> {
   const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) throw gatewayError("A IA não está configurada para esta aplicação.", 401);
+
+  const userContent: Array<Record<string, unknown>> = [{ type: "input_text", text: prompt }];
+  for (const image of images.slice(0, 10)) {
+    userContent.push({ type: "input_image", image_url: image, detail: "low" });
+  }
 
   const response = await fetch(GATEWAY_URL, {
     method: "POST",
@@ -48,7 +58,7 @@ async function runModel(instructions: string, prompt: string, signal?: AbortSign
       include: ["reasoning.encrypted_content"],
       input: [
         { role: "system", content: [{ type: "input_text", text: instructions }] },
-        { role: "user", content: [{ type: "input_text", text: prompt }] },
+        { role: "user", content: userContent },
       ],
     }),
   });
