@@ -33,7 +33,9 @@ const NAV = [
   { to: "/dashboard", label: "Painel", icon: LayoutDashboard },
   { to: "/create", label: "Criar clipes", icon: Sparkles },
   { to: "/videos", label: "Vídeos", icon: Film },
+  { to: "/audio", label: "Extrair áudio", icon: AudioLines },
   { to: "/clips", label: "Os meus clipes", icon: Scissors },
+
   { to: "/projects", label: "Projetos", icon: FolderKanban },
   { to: "/usage", label: "Utilização", icon: Gauge },
 ] as const;
