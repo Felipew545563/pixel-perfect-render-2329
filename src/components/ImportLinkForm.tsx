@@ -32,7 +32,6 @@ export function ImportLinkForm({ compact = false }: { compact?: boolean }) {
   const [url, setUrl] = useState("");
   const [transcript, setTranscript] = useState("");
   const [projectId, setProjectId] = useState<string>("none");
-  const [minutes, setMinutes] = useState("");
   const [preview, setPreview] = useState<Preview | null>(null);
   const [showDetails, setShowDetails] = useState(!compact);
 
@@ -58,7 +57,7 @@ export function ImportLinkForm({ compact = false }: { compact?: boolean }) {
           url,
           projectId: projectId === "none" ? null : projectId,
           transcript: transcript.trim() || undefined,
-          durationSeconds: minutes.trim() ? Math.round(Number(minutes) * 60) : undefined,
+          ...(preview?.durationSeconds ? { durationSeconds: preview.durationSeconds } : {}),
         },
       }),
     onSuccess: (video) => {
