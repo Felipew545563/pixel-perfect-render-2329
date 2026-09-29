@@ -1,6 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Scissors, Wand2, Captions, Crop } from "lucide-react";
 
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -31,6 +33,17 @@ const FEATURES = [
 ];
 
 function Landing() {
+  const navigate = useNavigate();
+  const { session, loading } = useAuth();
+
+  // Quem já tem sessão (incluindo quem regressa da Apple ou do Google) entra
+  // diretamente no espaço de trabalho, em vez de ver a página pública.
+  useEffect(() => {
+    if (!loading && session) navigate({ to: "/dashboard", replace: true });
+  }, [loading, session, navigate]);
+
+  const signedIn = !loading && !!session;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="mx-auto flex max-w-5xl items-center justify-between px-4 py-6">
@@ -39,7 +52,11 @@ function Landing() {
           <span className="font-semibold tracking-tight">ClipForge Studio</span>
         </div>
         <Button asChild size="sm">
-          <Link to="/auth">Iniciar sessão</Link>
+          {signedIn ? (
+            <Link to="/dashboard">Abrir espaço de trabalho</Link>
+          ) : (
+            <Link to="/auth">Iniciar sessão</Link>
+          )}
         </Button>
       </header>
 
@@ -53,10 +70,11 @@ function Landing() {
         </p>
         <div className="mt-8 flex justify-center gap-3">
           <Button asChild size="lg">
-            <Link to="/auth">Começar</Link>
-          </Button>
-          <Button asChild size="lg" variant="outline">
-            <Link to="/dashboard">Abrir espaço de trabalho</Link>
+            {signedIn ? (
+              <Link to="/dashboard">Abrir espaço de trabalho</Link>
+            ) : (
+              <Link to="/auth">Começar</Link>
+            )}
           </Button>
         </div>
       </section>
