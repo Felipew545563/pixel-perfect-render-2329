@@ -55,6 +55,8 @@ export function AudioExtractor() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [mode, setMode] = useState<Mode>("ligacao");
   const [link, setLink] = useState("");
+  const [startMin, setStartMin] = useState("0");
+  const [lengthMin, setLengthMin] = useState("120");
   const [file, setFile] = useState<File | null>(null);
   const [preset, setPreset] = useState<Preset>("leve");
   const [busy, setBusy] = useState(false);
@@ -136,17 +138,26 @@ export function AudioExtractor() {
         body: JSON.stringify({ url: value }),
       });
       const resolved = (await resolveResponse.json().catch(() => null)) as
-        | { audioUrl?: string; filename?: string; error?: string }
+        | { audioUrl?: string; filename?: string; error?: string; hls?: boolean; durationSeconds?: number | null }
         | null;
       if (!resolveResponse.ok || !resolved?.audioUrl) {
         throw new Error(resolved?.error ?? "Não foi possível obter o áudio desta ligação.");
       }
 
-      setStatus("A transferir o áudio…");
+      const startSeconds = Math.max(0, Number(startMin) || 0) * 60;
+      const durationSeconds = Math.min(180, Math.max(1, Number(lengthMin) || 120)) * 60;
+      if (resolved.hls && resolved.durationSeconds && startSeconds >= resolved.durationSeconds) {
+        throw new Error(`Esta gravação só tem ${Math.floor(resolved.durationSeconds / 60)} minutos.`);
+      }
+      setStatus(
+        resolved.hls
+          ? `A transferir o áudio (${Math.round(durationSeconds / 60)} min a partir do minuto ${Math.round(startSeconds / 60)})… pode demorar alguns minutos.`
+          : "A transferir o áudio…",
+      );
       const download = await fetch("/api/fetch-audio", {
         method: "POST",
         headers,
-        body: JSON.stringify({ url: resolved.audioUrl }),
+        body: JSON.stringify({ url: resolved.audioUrl, hls: resolved.hls === true, startSeconds, durationSeconds }),
       });
       if (!download.ok) {
         const detail = (await download.json().catch(() => null)) as { error?: string } | null;
@@ -239,8 +250,18 @@ export function AudioExtractor() {
               Obter áudio
             </Button>
           </div>
+          <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+            <label className="flex items-center gap-2">
+              Começar no minuto
+              <Input className="h-8 w-20" type="number" min={0} value={startMin} disabled={busy} onChange={(e) => setStartMin(e.target.value)} />
+            </label>
+            <label className="flex items-center gap-2">
+              Duração (minutos, máx. 180)
+              <Input className="h-8 w-20" type="number" min={1} max={180} value={lengthMin} disabled={busy} onChange={(e) => setLengthMin(e.target.value)} />
+            </label>
+          </div>
           <p className="text-xs text-muted-foreground">
-            Funciona com gravações já terminadas (VOD), clipes e ficheiros de áudio públicos. Algumas
+            Em gravações longas da Twitch e da Kick escolha o trecho a transferir. Funciona com gravações já terminadas (VOD), clipes e ficheiros de áudio públicos. Algumas
             plataformas limitam transferências: se falhar, descarregue a gravação e use «Por ficheiro».
           </p>
         </div>

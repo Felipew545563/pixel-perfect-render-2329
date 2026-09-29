@@ -3,6 +3,68 @@ import { verifyBearerCaller } from "@/lib/api-auth.server";
 import { parsePublicUrl } from "@/lib/media-link.server";
 
 const MAX_BYTES = 400 * 1024 * 1024;
+const MAX_HLS_SECONDS = 3 * 60 * 60;
+const UA =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36";
+
+/** Concatenates the MPEG-TS segments of an HLS media playlist for a time window into one stream. */
+async function streamHlsSegments(playlistUrl: string, start: number, length: number): Promise<Response> {
+  const res = await fetch(playlistUrl, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(20_000) }).catch(
+    () => null,
+  );
+  if (!res?.ok) {
+    return Response.json({ error: "Não foi possível ler a gravação. Tente novamente." }, { status: 502 });
+  }
+  const lines = (await res.text()).split(/\r?\n/);
+  const segments: string[] = [];
+  let clock = 0;
+  let pending = 0;
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (line.startsWith("#EXTINF:")) {
+      pending = Number(line.slice(8).split(",")[0]) || 0;
+    } else if (line && !line.startsWith("#")) {
+      const segStart = clock;
+      clock += pending;
+      if (clock > start && segStart < start + length) {
+        const parsed = parsePublicUrl(new URL(line, playlistUrl).toString());
+        if (parsed) segments.push(parsed.toString());
+      }
+    }
+  }
+  if (segments.length === 0) {
+    return Response.json({ error: "Esse intervalo não existe nesta gravação." }, { status: 422 });
+  }
+
+  let index = 0;
+  let sent = 0;
+  const stream = new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      if (index >= segments.length || sent > MAX_BYTES) {
+        controller.close();
+        return;
+      }
+      const url = segments[index++];
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const seg = await fetch(url, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(30_000) }).catch(
+          () => null,
+        );
+        if (seg?.ok) {
+          const chunk = new Uint8Array(await seg.arrayBuffer());
+          sent += chunk.byteLength;
+          controller.enqueue(chunk);
+          return;
+        }
+      }
+      // Skip a segment that keeps failing rather than aborting the whole download.
+    },
+  });
+
+  return new Response(stream, {
+    status: 200,
+    headers: { "Content-Type": "video/mp2t", "Cache-Control": "no-store", "X-Segments": String(segments.length) },
+  });
+}
 
 export const Route = createFileRoute("/api/fetch-audio")({
   server: {
@@ -12,9 +74,9 @@ export const Route = createFileRoute("/api/fetch-audio")({
           return Response.json({ error: "Sessão inválida. Volte a iniciar sessão." }, { status: 401 });
         }
 
-        let body: { url?: unknown };
+        let body: { url?: unknown; hls?: unknown; startSeconds?: unknown; durationSeconds?: unknown };
         try {
-          body = (await request.json()) as { url?: unknown };
+          body = (await request.json()) as typeof body;
         } catch {
           return Response.json({ error: "Pedido inválido." }, { status: 400 });
         }
@@ -22,6 +84,12 @@ export const Route = createFileRoute("/api/fetch-audio")({
         const target = parsePublicUrl(typeof body.url === "string" ? body.url : "");
         if (!target) {
           return Response.json({ error: "Endereço de áudio inválido." }, { status: 400 });
+        }
+
+        if (body.hls === true) {
+          const start = Math.max(0, Number(body.startSeconds) || 0);
+          const length = Math.min(MAX_HLS_SECONDS, Math.max(60, Number(body.durationSeconds) || MAX_HLS_SECONDS));
+          return streamHlsSegments(target.toString(), start, length);
         }
 
         const upstream = await fetch(target.toString(), {
