@@ -44,7 +44,7 @@ async function streamHlsSegments(playlistUrl: string, start: number, length: num
         controller.close();
         return;
       }
-      const url = segments[index++];
+      const url = segments[index++]!;
       for (let attempt = 0; attempt < 3; attempt++) {
         const seg = await fetch(url, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(30_000) }).catch(
           () => null,
