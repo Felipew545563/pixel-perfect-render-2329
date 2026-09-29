@@ -151,8 +151,19 @@ function VideoDetail() {
         </Button>
       </div>
 
+      <AutoAnalyzer
+        videoId={videoId}
+        clipCount={Number(clipCount)}
+        language={language}
+        lengthPreset={lengthPreset}
+      />
+
       <section className="space-y-3 rounded-lg border border-border bg-card p-4">
-        <h2 className="font-medium">Transcrição</h2>
+        <h2 className="font-medium">Legendas ou diálogo falado do vídeo</h2>
+        <p className="text-xs text-muted-foreground">
+          Preenchido automaticamente pela análise acima. Só precisa de escrever aqui se quiser corrigir uma frase ou se
+          já tiver as legendas prontas (no YouTube: Mais &gt; Mostrar transcrição).
+        </p>
         <Textarea rows={10} value={transcript} onChange={(e) => setTranscript(e.target.value)} />
         <div className="flex flex-wrap gap-2">
           <Button
@@ -160,7 +171,7 @@ function VideoDetail() {
             onClick={() => transcriptMutation.mutate()}
             disabled={transcriptMutation.isPending}
           >
-            Guardar transcrição
+            Guardar texto
           </Button>
           <p className="self-center text-xs text-muted-foreground">
             Os códigos de tempo, como 00:01:24, tornam os tempos dos clipes muito mais precisos.
@@ -169,7 +180,7 @@ function VideoDetail() {
       </section>
 
       <section className="space-y-4 rounded-lg border border-border bg-card p-4">
-        <h2 className="font-medium">Deteção de clipes com IA</h2>
+        <h2 className="font-medium">Analisar apenas o texto (sem ficheiro)</h2>
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="space-y-1">
             <Label>Número de clipes</Label>
