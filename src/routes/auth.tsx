@@ -82,19 +82,20 @@ function AuthPage() {
     }
   }
 
-  async function handleGoogle() {
+  async function handleOAuth(provider: "google" | "apple", label: string) {
     setBusy(true);
-    const result = await lovable.auth.signInWithOAuth("google", {
+    const result = await lovable.auth.signInWithOAuth(provider, {
       redirect_uri: window.location.origin,
     });
     if (result.error) {
-      toast.error("Não foi possível iniciar sessão com o Google. Tente novamente.");
+      toast.error(`Não foi possível iniciar sessão com ${label}. Tente novamente.`);
       setBusy(false);
       return;
     }
     if (result.redirected) return;
     navigate({ to: "/dashboard" });
   }
+
 
   async function handleReset() {
     if (!email) {
