@@ -246,6 +246,7 @@ export const updateVideo = createServerFn({ method: "POST" })
         id: z.string().uuid(),
         title: z.string().trim().min(1).max(300).optional(),
         transcript: z.string().max(400_000).optional(),
+        transcriptSource: z.enum(["user", "auto"]).optional(),
         durationSeconds: z.number().int().min(0).max(60 * 60 * 24).nullable().optional(),
         projectId: z.string().uuid().nullable().optional(),
       })
@@ -259,9 +260,11 @@ export const updateVideo = createServerFn({ method: "POST" })
     if (data.transcript !== undefined) {
       const transcript = data.transcript.trim();
       patch["transcript"] = transcript || null;
-      patch["transcript_source"] = transcript ? "user" : null;
+      patch["transcript_source"] = transcript ? (data.transcriptSource ?? "user") : null;
       patch["status"] = transcript ? "pending" : "awaiting_transcript";
-      patch["error_message"] = transcript ? null : "Adicione a transcrição para a IA encontrar os melhores momentos.";
+      patch["error_message"] = transcript
+        ? null
+        : "Use a análise automática do ficheiro original ou cole as legendas do vídeo.";
     }
     const { error } = await context.supabase.from("videos").update(patch as never).eq("id", data.id);
     if (error) throw new Error(error.message);
