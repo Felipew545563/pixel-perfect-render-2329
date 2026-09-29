@@ -1,11 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus } from "lucide-react";
 
 import { getOverview } from "@/lib/studio.functions";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ImportLinkForm } from "@/components/ImportLinkForm";
 import { formatDuration, formatTimecode, SOURCE_LABELS, VIDEO_STATUS_LABELS } from "@/lib/sources";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
