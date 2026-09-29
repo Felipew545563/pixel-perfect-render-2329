@@ -95,25 +95,22 @@ export function AutoAnalyzer({
         setProgress(12);
       }
 
-      let transcript = "";
-      if (mode !== "energy" || true) {
-        const chunks = await extractAudioChunks(ff, inputName, CHUNK_SECONDS, setStatus);
-        setProgress(18);
-        const pieces: string[] = [];
-        for (let i = 0; i < chunks.length; i++) {
-          const chunk = chunks[i]!;
-          setStatus(`A ouvir e escrever o que é dito (${i + 1}/${chunks.length})…`);
-          try {
-            const text = await transcribeChunk(chunk.blob, i);
-            if (text) pieces.push(`[${formatClock(chunk.startSeconds)}] ${text}`);
-          } catch (err) {
-            if (i === 0) throw err;
-            // a failed middle chunk must not lose the whole transcript
-          }
-          setProgress(18 + Math.round(((i + 1) / chunks.length) * 55));
+      const chunks = await extractAudioChunks(ff, inputName, CHUNK_SECONDS, setStatus);
+      setProgress(18);
+      const pieces: string[] = [];
+      for (let i = 0; i < chunks.length; i++) {
+        const chunk = chunks[i]!;
+        setStatus(`A ouvir e escrever o que é dito (${i + 1}/${chunks.length})…`);
+        try {
+          const text = await transcribeChunk(chunk.blob, i);
+          if (text) pieces.push(`[${formatClock(chunk.startSeconds)}] ${text}`);
+        } catch (err) {
+          if (i === 0) throw err;
+          // a failed middle chunk must not lose the whole transcript
         }
-        transcript = pieces.join("\n");
+        setProgress(18 + Math.round(((i + 1) / chunks.length) * 55));
       }
+      const transcript = pieces.join("\n");
 
       let frames: string[] = [];
       if (mode === "hybrid") {
