@@ -5,7 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Trash2, Pencil } from "lucide-react";
 
-import { createProject, deleteProject, listProjetos, renameProject } from "@/lib/studio.functions";
+import { createProject, deleteProject, listProjects, renameProject } from "@/lib/studio.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,17 +21,17 @@ export const Route = createFileRoute("/_authenticated/projects")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: ProjetosPage,
+  component: ProjectsPage,
 });
 
-function ProjetosPage() {
-  const fetchProjetos = useServerFn(listProjetos);
+function ProjectsPage() {
+  const fetchProjects = useServerFn(listProjects);
   const addProject = useServerFn(createProject);
   const rename = useServerFn(renameProject);
   const remove = useServerFn(deleteProject);
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({ queryKey: ["projects"], queryFn: () => fetchProjetos({}) });
+  const { data, isLoading } = useQuery({ queryKey: ["projects"], queryFn: () => fetchProjects({}) });
   const [name, setName] = useState("");
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["projects"] });

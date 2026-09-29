@@ -30,8 +30,8 @@ function AuthPage() {
   const { session, loading } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
-  const [password, setPalavra-passe] = useState("");
-  const [name, setNome] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ function AuthPage() {
           setMode("signin");
         }
       } else {
-        const { error } = await supabase.auth.signInWithPalavra-passe({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         navigate({ to: "/dashboard" });
       }
@@ -89,7 +89,7 @@ function AuthPage() {
       toast.error("Introduza primeiro o seu e-mail.");
       return;
     }
-    const { error } = await supabase.auth.resetPalavra-passeForEmail(email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth`,
     });
     if (error) toast.error(error.message);
@@ -97,11 +97,11 @@ function AuthPage() {
   }
 
   return (
-    <div classNome="flex min-h-screen items-center justify-center bg-background px-4 py-10">
-      <div classNome="w-full max-w-md">
-        <Link to="/" classNome="mb-6 flex items-center justify-center gap-2 text-foreground">
-          <Scissors classNome="size-5 text-primary" />
-          <span classNome="text-lg font-semibold tracking-tight">ClipForge Studio</span>
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+      <div className="w-full max-w-md">
+        <Link to="/" className="mb-6 flex items-center justify-center gap-2 text-foreground">
+          <Scissors className="size-5 text-primary" />
+          <span className="text-lg font-semibold tracking-tight">ClipForge Studio</span>
         </Link>
         <Card>
           <CardHeader>
@@ -112,23 +112,23 @@ function AuthPage() {
                 : "Comece a transformar vídeos longos em clipes curtos."}
             </CardDescription>
           </CardHeader>
-          <CardContent classNome="space-y-4">
-            <Button variant="outline" classNome="w-full" onClick={handleGoogle} disabled={busy}>
+          <CardContent className="space-y-4">
+            <Button variant="outline" className="w-full" onClick={handleGoogle} disabled={busy}>
               Continuar com o Google
             </Button>
-            <div classNome="flex items-center gap-3 text-xs text-muted-foreground">
-              <span classNome="h-px flex-1 bg-border" />
+            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <span className="h-px flex-1 bg-border" />
               ou
-              <span classNome="h-px flex-1 bg-border" />
+              <span className="h-px flex-1 bg-border" />
             </div>
-            <form classNome="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4" onSubmit={handleSubmit}>
               {mode === "signup" && (
-                <div classNome="space-y-2">
+                <div className="space-y-2">
                   <Label htmlFor="name">Nome</Label>
-                  <Input id="name" value={name} onChange={(e) => setNome(e.target.value)} placeholder="O seu nome" />
+                  <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="O seu nome" />
                 </div>
               )}
-              <div classNome="space-y-2">
+              <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -139,7 +139,7 @@ function AuthPage() {
                   placeholder="you@example.com"
                 />
               </div>
-              <div classNome="space-y-2">
+              <div className="space-y-2">
                 <Label htmlFor="password">Palavra-passe</Label>
                 <Input
                   id="password"
@@ -147,18 +147,18 @@ function AuthPage() {
                   required
                   minLength={6}
                   value={password}
-                  onChange={(e) => setPalavra-passe(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                 />
               </div>
-              <Button type="submit" classNome="w-full" disabled={busy}>
+              <Button type="submit" className="w-full" disabled={busy}>
                 {mode === "signin" ? "Iniciar sessão" : "Criar conta"}
               </Button>
             </form>
-            <div classNome="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-between text-sm">
               <button
                 type="button"
-                classNome="text-muted-foreground underline-offset-4 hover:underline"
+                className="text-muted-foreground underline-offset-4 hover:underline"
                 onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
               >
                 {mode === "signin" ? "Criar uma conta" : "Já tenho uma conta"}
@@ -166,7 +166,7 @@ function AuthPage() {
               {mode === "signin" && (
                 <button
                   type="button"
-                  classNome="text-muted-foreground underline-offset-4 hover:underline"
+                  className="text-muted-foreground underline-offset-4 hover:underline"
                   onClick={handleReset}
                 >
                   Esqueceu-se da palavra-passe?

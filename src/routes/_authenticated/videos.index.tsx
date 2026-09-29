@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 
-import { listVídeos } from "@/lib/studio.functions";
+import { listVideos } from "@/lib/studio.functions";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,12 +20,12 @@ export const Route = createFileRoute("/_authenticated/videos/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: VídeosPage,
+  component: VideosPage,
 });
 
-function VídeosPage() {
-  const fetchVídeos = useServerFn(listVídeos);
-  const { data, isLoading } = useQuery({ queryKey: ["videos"], queryFn: () => fetchVídeos({}) });
+function VideosPage() {
+  const fetchVideos = useServerFn(listVideos);
+  const { data, isLoading } = useQuery({ queryKey: ["videos"], queryFn: () => fetchVideos({}) });
   const [term, setTerm] = useState("");
 
   const videos = (data ?? []).filter((video) => {

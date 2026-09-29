@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Copy, Trash2, Guardar, Play } from "lucide-react";
+import { Copy, Trash2, Save, Play } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,13 +59,13 @@ async function copy(text: string, label: string) {
 export function ClipCard({
   clip,
   video,
-  onGuardar,
+  onSave,
   onDelete,
   busy,
 }: {
   clip: ClipRow;
   video?: ClipVideo | undefined;
-  onGuardar: (patch: {
+  onSave: (patch: {
     id: string;
     title: string;
     hook: string;
@@ -78,9 +78,9 @@ export function ClipCard({
 }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [title, setTítulo] = useState(clip.title);
-  const [hook, setGancho] = useState(clip.hook ?? "");
-  const [description, setDescrição] = useState(clip.description ?? "");
+  const [title, setTitle] = useState(clip.title);
+  const [hook, setHook] = useState(clip.hook ?? "");
+  const [description, setDescription] = useState(clip.description ?? "");
   const [start, setStart] = useState(String(num(clip.start_seconds)));
   const [end, setEnd] = useState(String(num(clip.end_seconds)));
 
@@ -194,15 +194,15 @@ export function ClipCard({
             <div className="space-y-3 rounded-md border border-border p-3">
               <div className="space-y-1">
                 <Label>Título</Label>
-                <Input value={title} onChange={(e) => setTítulo(e.target.value)} />
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} />
               </div>
               <div className="space-y-1">
                 <Label>Gancho</Label>
-                <Input value={hook} onChange={(e) => setGancho(e.target.value)} />
+                <Input value={hook} onChange={(e) => setHook(e.target.value)} />
               </div>
               <div className="space-y-1">
                 <Label>Descrição</Label>
-                <Textarea value={description} onChange={(e) => setDescrição(e.target.value)} rows={3} />
+                <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
@@ -225,11 +225,11 @@ export function ClipCard({
                       toast.error("O fim tem de ser posterior ao início.");
                       return;
                     }
-                    onGuardar({ id: clip.id, title, hook, description, startSeconds: s, endSeconds: e });
+                    onSave({ id: clip.id, title, hook, description, startSeconds: s, endSeconds: e });
                     setEditing(false);
                   }}
                 >
-                  <Guardar className="mr-1 size-3.5" /> Guardar
+                  <Save className="mr-1 size-3.5" /> Guardar
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>
                   Cancelar

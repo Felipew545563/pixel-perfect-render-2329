@@ -56,7 +56,7 @@ function UsagePage() {
       <section className="space-y-2">
         <h2 className="font-medium">Planos</h2>
         <p className="text-sm text-muted-foreground">
-          Everyone is on the Gratuito plan for now. Paid plans and checkout are not connected yet.
+          Por enquanto, todos utilizam o plano Gratuito. Os planos pagos e o pagamento ainda não estão disponíveis.
         </p>
         <ul className="grid gap-2">
           {PLANS.map((plan) => (

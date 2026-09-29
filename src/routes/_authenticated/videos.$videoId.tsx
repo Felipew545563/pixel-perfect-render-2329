@@ -48,14 +48,14 @@ function VideoDetail() {
     queryFn: () => fetchVideo({ data: { id: videoId } }),
   });
 
-  const [transcript, setTranscrição] = useState("");
+  const [transcript, setTranscript] = useState("");
   const [clipCount, setClipCount] = useState("5");
   const [lengthPreset, setLengthPreset] = useState<"short" | "medium" | "long" | "auto">("auto");
   const [language, setLanguage] = useState("português de Portugal");
   const [sort, setSort] = useState<SortKey>("score");
 
   useEffect(() => {
-    if (data?.video) setTranscrição(data.video.transcript ?? "");
+    if (data?.video) setTranscript(data.video.transcript ?? "");
   }, [data?.video?.id, data?.video?.transcript]);
 
   const invalidate = () => {
@@ -86,7 +86,7 @@ function VideoDetail() {
         },
       }),
     onSuccess: (result) => {
-      toast.success(`${(result as { clipes: number }).clips} clipes gerados`);
+      toast.success(`${(result as { clips: number }).clips} clipes gerados`);
       invalidate();
     },
     onError: (err: Error) => toast.error(err.message),
@@ -116,7 +116,7 @@ function VideoDetail() {
   if (!data) return null;
 
   const { video } = data;
-  const clipes = [...(data.clips as ClipRow[])].sort((a, b) => {
+  const clips = [...(data.clips as ClipRow[])].sort((a, b) => {
     if (sort === "score") return (b.clip_score ?? 0) - (a.clip_score ?? 0);
     if (sort === "duration")
       return Number(b.end_seconds) - Number(b.start_seconds) - (Number(a.end_seconds) - Number(a.start_seconds));
@@ -152,7 +152,7 @@ function VideoDetail() {
 
       <section className="space-y-3 rounded-lg border border-border bg-card p-4">
         <h2 className="font-medium">Transcrição</h2>
-        <Textarea rows={10} value={transcript} onChange={(e) => setTranscrição(e.target.value)} />
+        <Textarea rows={10} value={transcript} onChange={(e) => setTranscript(e.target.value)} />
         <div className="flex flex-wrap gap-2">
           <Button
             variant="outline"
@@ -209,14 +209,14 @@ function VideoDetail() {
           {analysisMutation.isPending ? "A analisar…" : clipes.length ? "Repetir análise" : "Encontrar os melhores momentos"}
         </Button>
         <p className="text-xs text-muted-foreground">
-          Re-running replaces the current clipes of this video. Scores are quality estimates, not a guarantee of
-          virality.
+          Repetir a análise substitui os clipes atuais deste vídeo. As pontuações são estimativas de qualidade, não uma garantia de
+          viralidade.
         </p>
       </section>
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-medium">Generated clipes ({clips.length})</h2>
+          <h2 className="font-medium">Clipes gerados ({clips.length})</h2>
           <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
             <SelectTrigger className="w-44">
               <SelectValue />
@@ -230,7 +230,7 @@ function VideoDetail() {
         </div>
         {clips.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            No clipes yet. Save the transcript and run the analysis above.
+            Ainda não existem clipes. Guarde a transcrição e execute a análise acima.
           </p>
         ) : (
           <div className="grid gap-3">
