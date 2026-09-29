@@ -8,7 +8,9 @@ import {
   Scissors,
   LogOut,
   Gauge,
+  AudioLines,
 } from "lucide-react";
+
 import { useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";

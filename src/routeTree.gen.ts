@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedAudioRouteImport } from './routes/_authenticated/audio'
 import { Route as AuthenticatedClipsRouteImport } from './routes/_authenticated/clips'
 import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated/create'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -34,6 +35,11 @@ const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAudioRoute = AuthenticatedAudioRouteImport.update({
+  id: '/audio',
+  path: '/audio',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedClipsRoute = AuthenticatedClipsRouteImport.update({
   id: '/clips',
@@ -81,6 +87,7 @@ const AuthenticatedVideosVideoIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/audio': typeof AuthenticatedAudioRoute
   '/clips': typeof AuthenticatedClipsRoute
   '/create': typeof AuthenticatedCreateRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/audio': typeof AuthenticatedAudioRoute
   '/clips': typeof AuthenticatedClipsRoute
   '/create': typeof AuthenticatedCreateRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/audio': typeof AuthenticatedAudioRoute
   '/_authenticated/clips': typeof AuthenticatedClipsRoute
   '/_authenticated/create': typeof AuthenticatedCreateRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/audio'
     | '/clips'
     | '/create'
     | '/dashboard'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/audio'
     | '/clips'
     | '/create'
     | '/dashboard'
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/audio'
     | '/_authenticated/clips'
     | '/_authenticated/create'
     | '/_authenticated/dashboard'
@@ -185,6 +197,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/audio': {
+      id: '/_authenticated/audio'
+      path: '/audio'
+      fullPath: '/audio'
+      preLoaderRoute: typeof AuthenticatedAudioRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/clips': {
       id: '/_authenticated/clips'
@@ -246,6 +265,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAudioRoute: typeof AuthenticatedAudioRoute
   AuthenticatedClipsRoute: typeof AuthenticatedClipsRoute
   AuthenticatedCreateRoute: typeof AuthenticatedCreateRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
@@ -256,6 +276,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAudioRoute: AuthenticatedAudioRoute,
   AuthenticatedClipsRoute: AuthenticatedClipsRoute,
   AuthenticatedCreateRoute: AuthenticatedCreateRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
