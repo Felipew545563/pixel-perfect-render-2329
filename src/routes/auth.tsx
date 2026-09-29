@@ -126,9 +126,30 @@ function AuthPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button variant="outline" className="w-full" onClick={handleGoogle} disabled={busy}>
-              Continuar com o Google
-            </Button>
+            <div className="space-y-2">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => handleOAuth("google", "o Google")}
+                disabled={busy}
+              >
+                <GoogleMark />
+                Continuar com o Google
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => handleOAuth("apple", "a Apple")}
+                disabled={busy}
+              >
+                <AppleMark />
+                Continuar com a Apple
+              </Button>
+              <p className="text-center text-xs text-muted-foreground">
+                Use a sua conta iCloud através da Apple.
+              </p>
+            </div>
+
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
               <span className="h-px flex-1 bg-border" />
               ou
