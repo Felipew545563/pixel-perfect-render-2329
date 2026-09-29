@@ -26,7 +26,7 @@ export type ResolvedAudio = {
 };
 
 const BROWSER_UA =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36";
+  "ClipForgeStudio/1.0";
 
 /** Picks the lowest-bandwidth variant (audio_only when present) from a master playlist. */
 async function pickLightVariant(masterUrl: string): Promise<{ url: string; durationSeconds: number | null }> {

@@ -5,7 +5,7 @@ import { parsePublicUrl } from "@/lib/media-link.server";
 const MAX_BYTES = 400 * 1024 * 1024;
 const MAX_HLS_SECONDS = 3 * 60 * 60;
 const UA =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36";
+  "ClipForgeStudio/1.0";
 
 /** Concatenates the MPEG-TS segments of an HLS media playlist for a time window into one stream. */
 async function streamHlsSegments(playlistUrl: string, start: number, length: number): Promise<Response> {
