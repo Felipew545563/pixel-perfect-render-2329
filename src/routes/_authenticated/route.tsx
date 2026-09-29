@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  LayoutPainel,
+  LayoutDashboard,
   FolderKanban,
   Sparkles,
   Film,
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 const NAV = [
-  { to: "/dashboard", label: "Painel", icon: LayoutPainel },
+  { to: "/dashboard", label: "Painel", icon: LayoutDashboard },
   { to: "/create", label: "Criar clipes", icon: Sparkles },
   { to: "/videos", label: "Vídeos", icon: Film },
   { to: "/clips", label: "Os meus clipes", icon: Scissors },

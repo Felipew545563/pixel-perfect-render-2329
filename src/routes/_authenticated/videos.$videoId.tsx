@@ -206,7 +206,7 @@ function VideoDetail() {
         </div>
         <Button size="lg" onClick={() => analysisMutation.mutate()} disabled={analysisMutation.isPending}>
           <Sparkles className="mr-1 size-4" />
-          {analysisMutation.isPending ? "A analisar…" : clipes.length ? "Repetir análise" : "Encontrar os melhores momentos"}
+          {analysisMutation.isPending ? "A analisar…" : clips.length ? "Repetir análise" : "Encontrar os melhores momentos"}
         </Button>
         <p className="text-xs text-muted-foreground">
           Repetir a análise substitui os clipes atuais deste vídeo. As pontuações são estimativas de qualidade, não uma garantia de
