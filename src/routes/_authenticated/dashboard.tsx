@@ -44,14 +44,14 @@ function Painel() {
         <>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              ["Vídeos processados", data.totals.videos],
-              ["Clipes criados", data.totals.clips],
-              ["Clipes este mês", data.totals.clipsThisMonth],
-              ["Minutos restantes", data.profile?.credits_minutes ?? 0],
+              ["Vídeos processados", String(data.totals.videos)],
+              ["Clipes criados", String(data.totals.clips)],
+              ["Clipes este mês", String(data.totals.clipsThisMonth)],
+              ["Minutos disponíveis", "Ilimitado"],
             ].map(([label, value]) => (
               <div key={String(label)} className="rounded-lg border border-border bg-card p-4">
                 <p className="text-xs text-muted-foreground">{label}</p>
-                <p className="mt-1 text-2xl font-semibold">{value as number}</p>
+                <p className="mt-1 text-2xl font-semibold">{value}</p>
               </div>
             ))}
           </div>
