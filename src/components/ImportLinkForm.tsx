@@ -118,55 +118,49 @@ export function ImportLinkForm({ compact = false }: { compact?: boolean }) {
 
       {!showDetails && (
         <Button variant="ghost" size="sm" onClick={() => setShowDetails(true)}>
-          Adicionar transcrição e mais opções
+          Opções adicionais
         </Button>
       )}
 
       {showDetails && (
         <>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label>Projeto (opcional)</Label>
-              <Select value={projectId} onValueChange={setProjectId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Sem projeto" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Sem projeto</SelectItem>
-                  {(projects.data ?? []).map((project) => (
-                    <SelectItem key={project.id} value={project.id}>
-                      {project.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="minutes">Duração do vídeo em minutos (opcional)</Label>
-              <Input
-                id="minutes"
-                value={minutes}
-                onChange={(e) => setMinutes(e.target.value)}
-                inputMode="decimal"
-                placeholder="ex.: 62"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label>Projeto (opcional)</Label>
+            <Select value={projectId} onValueChange={setProjectId}>
+              <SelectTrigger>
+                <SelectValue placeholder="Sem projeto" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Sem projeto</SelectItem>
+                {(projects.data ?? []).map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="transcript">Transcrição</Label>
+            <Label htmlFor="transcript">Legendas ou diálogo falado do vídeo (opcional)</Label>
             <Textarea
               id="transcript"
               value={transcript}
               onChange={(e) => setTranscript(e.target.value)}
-              rows={compact ? 5 : 8}
+              rows={compact ? 4 : 7}
               placeholder={"00:00:03 Orador 1: …\n00:00:18 Orador 2: …"}
             />
-            <p className="text-xs text-muted-foreground">
-              A IA lê a transcrição para encontrar os melhores momentos. Os códigos de tempo tornam os tempos dos clipes
-              muito mais precisos. A transcrição automática ainda não está ligada — pode adicionar o vídeo agora e colar
-              a transcrição mais tarde.
-            </p>
+            <div className="rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+              <p className="font-medium text-foreground">Não precisa de escrever nada aqui.</p>
+              <p className="mt-1">
+                No passo seguinte pode escolher o ficheiro do vídeo e a aplicação ouve o áudio, escreve sozinha o que é
+                dito e mede os momentos de maior energia (risos, gritos, aplausos).
+              </p>
+              <p className="mt-1">
+                Se já tiver as legendas, cole-as aqui: no YouTube, em <strong>Mais &gt; Mostrar transcrição</strong>,
+                copie e cole.
+              </p>
+            </div>
           </div>
         </>
       )}
