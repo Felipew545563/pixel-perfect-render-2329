@@ -44,7 +44,7 @@ function CreatePage() {
   const fetchProjects = useServerFn(listProjects);
 
   const [url, setUrl] = useState("");
-  const [transcript, setTranscrição] = useState("");
+  const [transcript, setTranscript] = useState("");
   const [projectId, setProjectId] = useState<string>("none");
   const [minutes, setMinutes] = useState("");
   const [preview, setPreview] = useState<Preview | null>(null);
@@ -164,7 +164,7 @@ function CreatePage() {
           <Textarea
             id="transcript"
             value={transcript}
-            onChange={(e) => setTranscrição(e.target.value)}
+            onChange={(e) => setTranscript(e.target.value)}
             rows={8}
             placeholder={"00:00:03 Orador 1: …\n00:00:18 Orador 2: …"}
           />
