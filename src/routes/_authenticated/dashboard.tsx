@@ -27,17 +27,15 @@ function Painel() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Painel</h1>
-          <p className="text-sm text-muted-foreground">Tudo o que processou até ao momento.</p>
-        </div>
-        <Button asChild size="lg">
-          <Link to="/create">
-            <Plus className="mr-1 size-4" /> Criar clipes
-          </Link>
-        </Button>
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Criar clipes a partir de uma ligação</h1>
+        <p className="text-sm text-muted-foreground">
+          Cole aqui a ligação de uma transmissão em direto, podcast ou vídeo longo para obter cortes verticais para
+          Reels, TikTok e Shorts.
+        </p>
       </div>
+
+      <ImportLinkForm compact />
 
       {error && <p className="text-sm text-destructive">{(error as Error).message}</p>}
       {isLoading && <p className="text-sm text-muted-foreground">A carregar…</p>}
