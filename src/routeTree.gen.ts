@@ -18,6 +18,8 @@ import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedUsageRouteImport } from './routes/_authenticated/usage'
+import { Route as ApiFetchAudioRouteImport } from './routes/api/fetch-audio'
+import { Route as ApiResolveAudioRouteImport } from './routes/api/resolve-audio'
 import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 import { Route as AuthenticatedVideosIndexRouteImport } from './routes/_authenticated/videos.index'
 import { Route as AuthenticatedVideosVideoIdRouteImport } from './routes/_authenticated/videos.$videoId'
@@ -66,6 +68,16 @@ const AuthenticatedUsageRoute = AuthenticatedUsageRouteImport.update({
   path: '/usage',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiFetchAudioRoute = ApiFetchAudioRouteImport.update({
+  id: '/api/fetch-audio',
+  path: '/api/fetch-audio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiResolveAudioRoute = ApiResolveAudioRouteImport.update({
+  id: '/api/resolve-audio',
+  path: '/api/resolve-audio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
   id: '/api/transcribe',
   path: '/api/transcribe',
@@ -93,6 +105,8 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/usage': typeof AuthenticatedUsageRoute
+  '/api/fetch-audio': typeof ApiFetchAudioRoute
+  '/api/resolve-audio': typeof ApiResolveAudioRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
   '/videos/': typeof AuthenticatedVideosIndexRoute
@@ -106,6 +120,8 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/usage': typeof AuthenticatedUsageRoute
+  '/api/fetch-audio': typeof ApiFetchAudioRoute
+  '/api/resolve-audio': typeof ApiResolveAudioRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
   '/videos': typeof AuthenticatedVideosIndexRoute
@@ -121,6 +137,8 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/usage': typeof AuthenticatedUsageRoute
+  '/api/fetch-audio': typeof ApiFetchAudioRoute
+  '/api/resolve-audio': typeof ApiResolveAudioRoute
   '/api/transcribe': typeof ApiTranscribeRoute
   '/_authenticated/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
   '/_authenticated/videos/': typeof AuthenticatedVideosIndexRoute
@@ -136,6 +154,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/projects'
     | '/usage'
+    | '/api/fetch-audio'
+    | '/api/resolve-audio'
     | '/api/transcribe'
     | '/videos/$videoId'
     | '/videos/'
@@ -149,6 +169,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/projects'
     | '/usage'
+    | '/api/fetch-audio'
+    | '/api/resolve-audio'
     | '/api/transcribe'
     | '/videos/$videoId'
     | '/videos'
@@ -163,6 +185,8 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/projects'
     | '/_authenticated/usage'
+    | '/api/fetch-audio'
+    | '/api/resolve-audio'
     | '/api/transcribe'
     | '/_authenticated/videos/$videoId'
     | '/_authenticated/videos/'
@@ -172,6 +196,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiFetchAudioRoute: typeof ApiFetchAudioRoute
+  ApiResolveAudioRoute: typeof ApiResolveAudioRoute
   ApiTranscribeRoute: typeof ApiTranscribeRoute
 }
 
@@ -240,6 +266,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsageRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/fetch-audio': {
+      id: '/api/fetch-audio'
+      path: '/api/fetch-audio'
+      fullPath: '/api/fetch-audio'
+      preLoaderRoute: typeof ApiFetchAudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/resolve-audio': {
+      id: '/api/resolve-audio'
+      path: '/api/resolve-audio'
+      fullPath: '/api/resolve-audio'
+      preLoaderRoute: typeof ApiResolveAudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/transcribe': {
       id: '/api/transcribe'
       path: '/api/transcribe'
@@ -293,6 +333,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiFetchAudioRoute: ApiFetchAudioRoute,
+  ApiResolveAudioRoute: ApiResolveAudioRoute,
   ApiTranscribeRoute: ApiTranscribeRoute,
 }
 export const routeTree = rootRouteImport
