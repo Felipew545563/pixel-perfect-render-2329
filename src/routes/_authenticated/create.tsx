@@ -16,10 +16,10 @@ import { SOURCE_LABELS, formatDuration } from "@/lib/sources";
 export const Route = createFileRoute("/_authenticated/create")({
   head: () => ({
     meta: [
-      { title: "Create clips · ClipForge Studio" },
-      { name: "description", content: "Paste a video link and let the AI find the best short-form moments." },
-      { property: "og:title", content: "Create clips · ClipForge Studio" },
-      { property: "og:description", content: "Paste a video link and let the AI find the best short-form moments." },
+      { title: "Criar clipes · ClipForge Studio" },
+      { name: "description", content: "Cole a ligação de um vídeo e deixe a IA encontrar os melhores momentos para clipes curtos." },
+      { property: "og:title", content: "Criar clipes · ClipForge Studio" },
+      { property: "og:description", content: "Cole a ligação de um vídeo e deixe a IA encontrar os melhores momentos para clipes curtos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -44,7 +44,7 @@ function CreatePage() {
   const fetchProjects = useServerFn(listProjects);
 
   const [url, setUrl] = useState("");
-  const [transcript, setTranscript] = useState("");
+  const [transcript, setTranscrição] = useState("");
   const [projectId, setProjectId] = useState<string>("none");
   const [minutes, setMinutes] = useState("");
   const [preview, setPreview] = useState<Preview | null>(null);
@@ -68,7 +68,7 @@ function CreatePage() {
         },
       }),
     onSuccess: (video) => {
-      toast.success("Video imported");
+      toast.success("Vídeo importado");
       navigate({ to: "/videos/$videoId", params: { videoId: (video as { id: string }).id } });
     },
     onError: (error: Error) => toast.error(error.message),
@@ -77,15 +77,15 @@ function CreatePage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Create clips</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Criar clipes</h1>
         <p className="text-sm text-muted-foreground">
-          Paste the link of a livestream, podcast, interview or any long video.
+          Cole a ligação de uma transmissão em direto, podcast, entrevista ou qualquer vídeo longo.
         </p>
       </div>
 
       <div className="space-y-4 rounded-lg border border-border bg-card p-4">
         <div className="space-y-2">
-          <Label htmlFor="url">Video link</Label>
+          <Label htmlFor="url">Ligação do vídeo</Label>
           <div className="flex gap-2">
             <Input
               id="url"
@@ -101,11 +101,11 @@ function CreatePage() {
               onClick={() => inspectMutation.mutate()}
               disabled={!url.trim() || inspectMutation.isPending}
             >
-              <Search className="mr-1 size-4" /> Check
+              <Search className="mr-1 size-4" /> Verificar
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
-            YouTube, Twitch, Vimeo and other public links are detected automatically.
+            As ligações públicas do YouTube, Twitch, Vimeo e outras plataformas são detetadas automaticamente.
           </p>
         </div>
 
@@ -132,13 +132,13 @@ function CreatePage() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label>Project (optional)</Label>
+            <Label>Projeto (opcional)</Label>
             <Select value={projectId} onValueChange={setProjectId}>
               <SelectTrigger>
-                <SelectValue placeholder="No project" />
+                <SelectValue placeholder="Sem projeto" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">No project</SelectItem>
+                <SelectItem value="none">Sem projeto</SelectItem>
                 {(projects.data ?? []).map((project) => (
                   <SelectItem key={project.id} value={project.id}>
                     {project.name}
@@ -148,30 +148,30 @@ function CreatePage() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="minutes">Video length in minutes (optional)</Label>
+            <Label htmlFor="minutes">Duração do vídeo em minutos (opcional)</Label>
             <Input
               id="minutes"
               value={minutes}
               onChange={(e) => setMinutes(e.target.value)}
               inputMode="decimal"
-              placeholder="e.g. 62"
+              placeholder="ex.: 62"
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="transcript">Transcript</Label>
+          <Label htmlFor="transcript">Transcrição</Label>
           <Textarea
             id="transcript"
             value={transcript}
-            onChange={(e) => setTranscript(e.target.value)}
+            onChange={(e) => setTranscrição(e.target.value)}
             rows={8}
-            placeholder={"00:00:03 Speaker 1: …\n00:00:18 Speaker 2: …"}
+            placeholder={"00:00:03 Orador 1: …\n00:00:18 Orador 2: …"}
           />
           <p className="text-xs text-muted-foreground">
-            The AI reads the transcript to find the best moments. Timecodes make the clip timings much more
-            accurate. Automatic transcription is not connected yet — you can add the video now and paste the
-            transcript later.
+            A IA lê a transcrição para encontrar os melhores momentos. Os códigos de tempo tornam os tempos dos clipes muito mais
+            precisos. A transcrição automática ainda não está ligada — pode adicionar o vídeo agora e colar a
+            transcrição mais tarde.
           </p>
         </div>
 
@@ -181,7 +181,7 @@ function CreatePage() {
           onClick={() => importMutation.mutate()}
           disabled={!url.trim() || importMutation.isPending}
         >
-          <Sparkles className="mr-1 size-4" /> Import video
+          <Sparkles className="mr-1 size-4" /> Importar vídeo
         </Button>
       </div>
     </div>

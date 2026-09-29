@@ -20,33 +20,33 @@ export const TOUR_STORAGE_KEY = "clipforge_tour_seen_v1";
 const STEPS = [
   {
     icon: Sparkles,
-    title: "Welcome to ClipForge Studio",
-    text: "Paste a link to a podcast, livestream or interview and let AI turn it into short vertical clips, ready for TikTok, Reels and Shorts. This quick tour takes under a minute.",
+    title: "Bem-vindo ao ClipForge Studio",
+    text: "Cole a ligação de um podcast, transmissão em direto ou entrevista e deixe a IA transformá-lo em clipes verticais curtos, prontos para TikTok, Reels e Shorts. Esta visita guiada demora menos de um minuto.",
   },
   {
     icon: Link2,
-    title: "1 · Import a video",
-    text: "Go to \"Create clips\" and paste a video link. The source (YouTube, Twitch, Vimeo or other) is detected automatically, so you never upload heavy files.",
+    title: "1 · Importar um vídeo",
+    text: "Aceda a \"Criar clipes\" e cole a ligação de um vídeo. A origem (YouTube, Twitch, Vimeo ou outra) é detetada automaticamente, sem carregar ficheiros pesados.",
   },
   {
     icon: FileText,
-    title: "2 · Add the transcript",
-    text: "After importing, paste the video transcript in the box provided. The AI reads the transcript in its original language — it works for any language.",
+    title: "2 · Adicionar a transcrição",
+    text: "Depois de importar, cole a transcrição do vídeo no campo indicado. A IA lê a transcrição no idioma original — funciona com qualquer idioma.",
   },
   {
     icon: Wand2,
-    title: "3 · Analyze with AI",
-    text: "Choose how many clips you want (3 to 20) and the length (15–30s, 30–60s, 60–180s or let AI decide), then run the analysis. Each suggested moment is scored on hook, clarity, emotion, context, retention and shareability.",
+    title: "3 · Analisar com IA",
+    text: "Escolha quantos clipes pretende (3 a 20) e a duração (15–30 s, 30–60 s, 60–180 s ou decisão da IA) e inicie a análise. Cada momento sugerido é avaliado pelo gancho, clareza, emoção, contexto, retenção e potencial de partilha.",
   },
   {
     icon: Scissors,
-    title: "4 · Review your clips",
-    text: "In \"My clips\" you can preview each moment, edit titles and timecodes, copy the ready-to-post caption, title and hashtags — and sort clips by score, duration or date.",
+    title: "4 · Rever os seus clipes",
+    text: "Em \"Os meus clipes\", pode pré-visualizar cada momento, editar títulos e códigos de tempo, copiar legendas, títulos e hashtags prontos a publicar e ordenar por pontuação, duração ou data.",
   },
   {
     icon: Gauge,
-    title: "5 · Track your usage",
-    text: "Every analysis deducts minutes from your plan. Watch the \"Usage\" page for your history and remaining minutes, and use \"Projects\" to keep videos organized by client or series.",
+    title: "5 · Acompanhar a utilização",
+    text: "Cada análise desconta minutos do seu plano. Consulte \"Utilização\" para ver os minutos restantes e use \"Projetos\" para organizar vídeos por cliente ou série.",
   },
 ] as const;
 
@@ -95,15 +95,15 @@ export function OnboardingTour({ open, onOpenChange }: { open: boolean; onOpenCh
           <div className="flex items-center gap-2">
             {step > 0 && (
               <Button variant="ghost" size="sm" onClick={() => setStep((s) => s - 1)}>
-                <ArrowLeft className="mr-1 size-4" /> Back
+                <ArrowLeft className="mr-1 size-4" /> Anterior
               </Button>
             )}
             <Button size="sm" onClick={next}>
               {isLast ? (
-                "Start creating"
+                "Começar a criar"
               ) : (
                 <>
-                  Next <ArrowRight className="ml-1 size-4" />
+                  Seguinte <ArrowRight className="ml-1 size-4" />
                 </>
               )}
             </Button>
@@ -122,7 +122,7 @@ export function TutorialButton({ onClick }: { onClick: () => void }) {
       className="w-full justify-start px-2 text-muted-foreground hover:text-foreground"
       onClick={onClick}
     >
-      <CircleHelp className="mr-2 size-4" /> How it works
+      <CircleHelp className="mr-2 size-4" /> Como funciona
     </Button>
   );
 }

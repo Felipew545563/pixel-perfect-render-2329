@@ -6,16 +6,16 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ClipForge Studio · AI clips from long videos" },
+      { title: "ClipForge Studio · Clipes com IA a partir de vídeos longos" },
       {
         name: "description",
         content:
-          "Paste a podcast, livestream or interview link and let AI find the strongest moments, ready for TikTok, Reels and Shorts.",
+          "Cole a ligação de um podcast, transmissão em direto ou entrevista e deixe a IA encontrar os melhores momentos para TikTok, Reels e Shorts.",
       },
-      { property: "og:title", content: "ClipForge Studio · AI clips from long videos" },
+      { property: "og:title", content: "ClipForge Studio · Clipes com IA a partir de vídeos longos" },
       {
         property: "og:description",
-        content: "AI finds the best moments of your long videos and turns them into short-form clips.",
+        content: "A IA encontra os melhores momentos dos seus vídeos longos e transforma-os em clipes curtos.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -25,9 +25,9 @@ export const Route = createFileRoute("/")({
 });
 
 const FEATURES = [
-  { icon: Wand2, title: "AI moment detection", text: "Hook, development and payoff scored for each suggested clip." },
-  { icon: Captions, title: "Ready-to-post copy", text: "Titles, hooks, descriptions, captions and hashtags per clip." },
-  { icon: Crop, title: "Vertical-first", text: "Every clip is planned for 9:16, with 1:1 and 16:9 options." },
+  { icon: Wand2, title: "Deteção de momentos com IA", text: "Gancho, desenvolvimento e conclusão avaliados em cada clipe sugerido." },
+  { icon: Captions, title: "Textos prontos a publicar", text: "Títulos, ganchos, descrições, legendas e hashtags para cada clipe." },
+  { icon: Crop, title: "Pensado para vídeo vertical", text: "Cada clipe é preparado em 9:16, com opções 1:1 e 16:9." },
 ];
 
 function Landing() {
@@ -39,24 +39,24 @@ function Landing() {
           <span className="font-semibold tracking-tight">ClipForge Studio</span>
         </div>
         <Button asChild size="sm">
-          <Link to="/auth">Sign in</Link>
+          <Link to="/auth">Iniciar sessão</Link>
         </Button>
       </header>
 
       <section className="mx-auto max-w-3xl px-4 pb-12 pt-10 text-center">
         <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-          Turn long videos into short clips with AI
+          Transforme vídeos longos em clipes curtos com IA
         </h1>
         <p className="mt-4 text-base text-muted-foreground sm:text-lg">
-          Paste a link to a podcast, livestream or interview. The AI reads the transcript, finds the strongest
-          moments and writes the title, hook and captions for each clip.
+          Cole a ligação de um podcast, transmissão em direto ou entrevista. A IA lê a transcrição, encontra os melhores
+          momentos e escreve o título, o gancho e as legendas de cada clipe.
         </p>
         <div className="mt-8 flex justify-center gap-3">
           <Button asChild size="lg">
-            <Link to="/auth">Get started</Link>
+            <Link to="/auth">Começar</Link>
           </Button>
           <Button asChild size="lg" variant="outline">
-            <Link to="/dashboard">Open workspace</Link>
+            <Link to="/dashboard">Abrir espaço de trabalho</Link>
           </Button>
         </div>
       </section>

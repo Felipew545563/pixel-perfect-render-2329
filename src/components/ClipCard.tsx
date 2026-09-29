@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
-import { Copy, Trash2, Save, Play } from "lucide-react";
+import { Copy, Trash2, Guardar, Play } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,22 +50,22 @@ function scoreTone(score: number | null) {
 async function copy(text: string, label: string) {
   try {
     await navigator.clipboard.writeText(text);
-    toast.success(`${label} copied`);
+    toast.success(`${label} copiado`);
   } catch {
-    toast.error("Could not copy");
+    toast.error("Não foi possível copiar");
   }
 }
 
 export function ClipCard({
   clip,
   video,
-  onSave,
+  onGuardar,
   onDelete,
   busy,
 }: {
   clip: ClipRow;
   video?: ClipVideo | undefined;
-  onSave: (patch: {
+  onGuardar: (patch: {
     id: string;
     title: string;
     hook: string;
@@ -78,9 +78,9 @@ export function ClipCard({
 }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [title, setTitle] = useState(clip.title);
-  const [hook, setHook] = useState(clip.hook ?? "");
-  const [description, setDescription] = useState(clip.description ?? "");
+  const [title, setTítulo] = useState(clip.title);
+  const [hook, setGancho] = useState(clip.hook ?? "");
+  const [description, setDescrição] = useState(clip.description ?? "");
   const [start, setStart] = useState(String(num(clip.start_seconds)));
   const [end, setEnd] = useState(String(num(clip.end_seconds)));
 
@@ -94,9 +94,9 @@ export function ClipCard({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Clip #{clip.position}</span>
+            <span className="text-xs text-muted-foreground">Clipe n.º {clip.position}</span>
             <Badge className={scoreTone(clip.clip_score)} variant="secondary">
-              Score {clip.clip_score ?? "—"}
+              Pontuação {clip.clip_score ?? "—"}
             </Badge>
             <span className="text-xs text-muted-foreground">
               {formatTimecode(startSec)} – {formatTimecode(endSec)} · {Math.round(endSec - startSec)}s
@@ -107,7 +107,7 @@ export function ClipCard({
         </div>
         <div className="flex gap-2">
           <Button size="sm" variant="outline" onClick={() => setOpen((v) => !v)}>
-            <Play className="mr-1 size-3.5" /> {open ? "Hide" : "Preview"}
+            <Play className="mr-1 size-3.5" /> {open ? "Ocultar" : "Pré-visualizar"}
           </Button>
           <Button size="sm" variant="ghost" onClick={() => onDelete(clip.id)} disabled={busy}>
             <Trash2 className="size-4" />
@@ -129,26 +129,26 @@ export function ClipCard({
                 />
               ) : (
                 <div className="flex h-full flex-col items-center justify-center gap-2 p-4 text-center text-xs text-muted-foreground">
-                  No inline preview for this source.
+                  Não existe pré-visualização incorporada para esta origem.
                   {video && (
                     <a className="underline" href={video.url} target="_blank" rel="noreferrer">
-                      Open the original video
+                      Abrir o vídeo original
                     </a>
                   )}
                 </div>
               )}
             </div>
             <p className="mt-2 text-center text-xs text-muted-foreground">
-              9:16 frame preview. The segment plays from the original video.
+              Pré-visualização em 9:16. O segmento é reproduzido a partir do vídeo original.
             </p>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-4">
             {[
-              ["Hook", clip.hook_score],
-              ["Emotion", clip.emotion_score],
-              ["Clarity", clip.clarity_score],
-              ["Overall", clip.clip_score],
+              ["Gancho", clip.hook_score],
+              ["Emoção", clip.emotion_score],
+              ["Clareza", clip.clarity_score],
+              ["Geral", clip.clip_score],
             ].map(([label, value]) => (
               <div key={String(label)} className="rounded-md border border-border p-2 text-center">
                 <p className="text-xs text-muted-foreground">{label}</p>
@@ -162,24 +162,24 @@ export function ClipCard({
           )}
           {clip.transcript_excerpt && (
             <details className="text-sm">
-              <summary className="cursor-pointer text-muted-foreground">Transcript of this moment</summary>
+              <summary className="cursor-pointer text-muted-foreground">Transcrição deste momento</summary>
               <p className="mt-2 whitespace-pre-wrap">{clip.transcript_excerpt}</p>
             </details>
           )}
 
           <div className="grid gap-2 sm:grid-cols-2">
-            <Button size="sm" variant="outline" onClick={() => copy(clip.caption_tiktok ?? "", "TikTok caption")}>
-              <Copy className="mr-1 size-3.5" /> TikTok caption
+            <Button size="sm" variant="outline" onClick={() => copy(clip.caption_tiktok ?? "", "Legenda do TikTok")}>
+              <Copy className="mr-1 size-3.5" /> Legenda do TikTok
             </Button>
             <Button
               size="sm"
               variant="outline"
-              onClick={() => copy(clip.caption_instagram ?? "", "Instagram caption")}
+              onClick={() => copy(clip.caption_instagram ?? "", "Legenda do Instagram")}
             >
-              <Copy className="mr-1 size-3.5" /> Instagram caption
+              <Copy className="mr-1 size-3.5" /> Legenda do Instagram
             </Button>
-            <Button size="sm" variant="outline" onClick={() => copy(clip.youtube_title ?? "", "YouTube title")}>
-              <Copy className="mr-1 size-3.5" /> YouTube Shorts title
+            <Button size="sm" variant="outline" onClick={() => copy(clip.youtube_title ?? "", "Título do YouTube")}>
+              <Copy className="mr-1 size-3.5" /> Título para YouTube Shorts
             </Button>
             <Button size="sm" variant="outline" onClick={() => copy(hashtags, "Hashtags")}>
               <Copy className="mr-1 size-3.5" /> Hashtags
@@ -188,29 +188,29 @@ export function ClipCard({
 
           {!editing ? (
             <Button size="sm" variant="secondary" onClick={() => setEditing(true)}>
-              Edit clip
+              Editar clipe
             </Button>
           ) : (
             <div className="space-y-3 rounded-md border border-border p-3">
               <div className="space-y-1">
-                <Label>Title</Label>
-                <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+                <Label>Título</Label>
+                <Input value={title} onChange={(e) => setTítulo(e.target.value)} />
               </div>
               <div className="space-y-1">
-                <Label>Hook</Label>
-                <Input value={hook} onChange={(e) => setHook(e.target.value)} />
+                <Label>Gancho</Label>
+                <Input value={hook} onChange={(e) => setGancho(e.target.value)} />
               </div>
               <div className="space-y-1">
-                <Label>Description</Label>
-                <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
+                <Label>Descrição</Label>
+                <Textarea value={description} onChange={(e) => setDescrição(e.target.value)} rows={3} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label>Start (seconds)</Label>
+                  <Label>Início (segundos)</Label>
                   <Input value={start} onChange={(e) => setStart(e.target.value)} inputMode="numeric" />
                 </div>
                 <div className="space-y-1">
-                  <Label>End (seconds)</Label>
+                  <Label>Fim (segundos)</Label>
                   <Input value={end} onChange={(e) => setEnd(e.target.value)} inputMode="numeric" />
                 </div>
               </div>
@@ -222,17 +222,17 @@ export function ClipCard({
                     const s = Number(start);
                     const e = Number(end);
                     if (!Number.isFinite(s) || !Number.isFinite(e) || e <= s) {
-                      toast.error("The end must come after the start.");
+                      toast.error("O fim tem de ser posterior ao início.");
                       return;
                     }
-                    onSave({ id: clip.id, title, hook, description, startSeconds: s, endSeconds: e });
+                    onGuardar({ id: clip.id, title, hook, description, startSeconds: s, endSeconds: e });
                     setEditing(false);
                   }}
                 >
-                  <Save className="mr-1 size-3.5" /> Save
+                  <Guardar className="mr-1 size-3.5" /> Guardar
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>
-                  Cancel
+                  Cancelar
                 </Button>
               </div>
             </div>

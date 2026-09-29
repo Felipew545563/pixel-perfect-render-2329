@@ -30,7 +30,7 @@ function gatewayError(message: string, status: number): GatewayError {
 /** Streams a Responses call and returns the accumulated text. */
 async function runModel(instructions: string, prompt: string, signal?: AbortSignal): Promise<string> {
   const apiKey = process.env["LOVABLE_API_KEY"];
-  if (!apiKey) throw gatewayError("AI is not configured for this app.", 401);
+  if (!apiKey) throw gatewayError("A IA não está configurada para esta aplicação.", 401);
 
   const response = await fetch(GATEWAY_URL, {
     method: "POST",
@@ -56,9 +56,9 @@ async function runModel(instructions: string, prompt: string, signal?: AbortSign
   if (!response.ok || !response.body) {
     const detail = await response.text().catch(() => "");
     if (response.status === 429)
-      throw gatewayError("The AI is busy right now. Try again in a moment.", 429);
+      throw gatewayError("A IA está ocupada neste momento. Tente novamente dentro de instantes.", 429);
     if (response.status === 402)
-      throw gatewayError("AI credits are exhausted for this workspace.", 402);
+      throw gatewayError("Os créditos de IA deste espaço de trabalho esgotaram-se.", 402);
     throw gatewayError(
       `AI request failed (${response.status}). ${detail.slice(0, 300)}`,
       response.status,
@@ -93,7 +93,7 @@ async function runModel(instructions: string, prompt: string, signal?: AbortSign
           } else if (event.type === "response.output_text.done" && !text && event.text) {
             text += event.text;
           } else if (event.type === "error") {
-            throw gatewayError("The AI returned an error while analyzing the video.", 502);
+            throw gatewayError("A IA devolveu um erro durante a análise do vídeo.", 502);
           }
         } catch {
           // ignore partial / non-JSON frames
@@ -109,7 +109,7 @@ function extractJson(raw: string): unknown {
   const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
   const body = (fenced?.[1] ?? raw).trim();
   const start = body.search(/[[{]/);
-  if (start === -1) throw new Error("The AI response did not contain any clip data.");
+  if (start === -1) throw new Error("A resposta da IA não continha dados de clipes.");
   const candidate = body.slice(start);
   try {
     return JSON.parse(candidate);
@@ -179,7 +179,7 @@ export async function findClips(
       ? (parsed as { clips: unknown[] }).clips
       : [];
 
-  if (!list.length) throw new Error("The AI did not find any usable moments in this transcript.");
+  if (!list.length) throw new Error("A IA não encontrou momentos utilizáveis nesta transcrição.");
 
   const maxEnd = options.durationSeconds ?? Number.MAX_SAFE_INTEGER;
 
@@ -194,7 +194,7 @@ export async function findClips(
           .slice(0, 12)
       : [];
     return {
-      title: str(raw["title"], "Untitled clip").slice(0, 160),
+      title: str(raw["title"], "Clipe sem título").slice(0, 160),
       hook: str(raw["hook"]).slice(0, 300),
       description: str(raw["description"]).slice(0, 1200),
       start_seconds: start,

@@ -14,10 +14,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in · ClipForge Studio" },
-      { name: "description", content: "Sign in to turn long videos, podcasts and streams into short vertical clips." },
-      { property: "og:title", content: "Sign in · ClipForge Studio" },
-      { property: "og:description", content: "Access your AI clipping workspace." },
+      { title: "Iniciar sessão · ClipForge Studio" },
+      { name: "description", content: "Inicie sessão para transformar vídeos longos, podcasts e transmissões em clipes verticais curtos." },
+      { property: "og:title", content: "Iniciar sessão · ClipForge Studio" },
+      { property: "og:description", content: "Aceda ao seu espaço de criação de clipes com IA." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -30,8 +30,8 @@ function AuthPage() {
   const { session, loading } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [password, setPalavra-passe] = useState("");
+  const [name, setNome] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -55,16 +55,16 @@ function AuthPage() {
         if (data.session) {
           navigate({ to: "/dashboard" });
         } else {
-          toast.success("Account created. Check your inbox to confirm your email.");
+          toast.success("Conta criada. Consulte a sua caixa de entrada para confirmar o e-mail.");
           setMode("signin");
         }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPalavra-passe({ email, password });
         if (error) throw error;
         navigate({ to: "/dashboard" });
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Something went wrong.");
+      toast.error(error instanceof Error ? error.message : "Ocorreu um erro.");
     } finally {
       setBusy(false);
     }
@@ -76,7 +76,7 @@ function AuthPage() {
       redirect_uri: window.location.origin,
     });
     if (result.error) {
-      toast.error("Google sign-in failed. Try again.");
+      toast.error("Não foi possível iniciar sessão com o Google. Tente novamente.");
       setBusy(false);
       return;
     }
@@ -86,49 +86,49 @@ function AuthPage() {
 
   async function handleReset() {
     if (!email) {
-      toast.error("Type your email first.");
+      toast.error("Introduza primeiro o seu e-mail.");
       return;
     }
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await supabase.auth.resetPalavra-passeForEmail(email, {
       redirectTo: `${window.location.origin}/auth`,
     });
     if (error) toast.error(error.message);
-    else toast.success("Password reset email sent.");
+    else toast.success("E-mail de reposição da palavra-passe enviado.");
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
-      <div className="w-full max-w-md">
-        <Link to="/" className="mb-6 flex items-center justify-center gap-2 text-foreground">
-          <Scissors className="size-5 text-primary" />
-          <span className="text-lg font-semibold tracking-tight">ClipForge Studio</span>
+    <div classNome="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+      <div classNome="w-full max-w-md">
+        <Link to="/" classNome="mb-6 flex items-center justify-center gap-2 text-foreground">
+          <Scissors classNome="size-5 text-primary" />
+          <span classNome="text-lg font-semibold tracking-tight">ClipForge Studio</span>
         </Link>
         <Card>
           <CardHeader>
-            <CardTitle>{mode === "signin" ? "Sign in" : "Create your account"}</CardTitle>
+            <CardTitle>{mode === "signin" ? "Iniciar sessão" : "Criar a sua conta"}</CardTitle>
             <CardDescription>
               {mode === "signin"
-                ? "Access your videos, clips and projects."
-                : "Start turning long videos into short clips."}
+                ? "Aceda aos seus vídeos, clipes e projetos."
+                : "Comece a transformar vídeos longos em clipes curtos."}
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <Button variant="outline" className="w-full" onClick={handleGoogle} disabled={busy}>
-              Continue with Google
+          <CardContent classNome="space-y-4">
+            <Button variant="outline" classNome="w-full" onClick={handleGoogle} disabled={busy}>
+              Continuar com o Google
             </Button>
-            <div className="flex items-center gap-3 text-xs text-muted-foreground">
-              <span className="h-px flex-1 bg-border" />
-              or
-              <span className="h-px flex-1 bg-border" />
+            <div classNome="flex items-center gap-3 text-xs text-muted-foreground">
+              <span classNome="h-px flex-1 bg-border" />
+              ou
+              <span classNome="h-px flex-1 bg-border" />
             </div>
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form classNome="space-y-4" onSubmit={handleSubmit}>
               {mode === "signup" && (
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
+                <div classNome="space-y-2">
+                  <Label htmlFor="name">Nome</Label>
+                  <Input id="name" value={name} onChange={(e) => setNome(e.target.value)} placeholder="O seu nome" />
                 </div>
               )}
-              <div className="space-y-2">
+              <div classNome="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -139,37 +139,37 @@ function AuthPage() {
                   placeholder="you@example.com"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+              <div classNome="space-y-2">
+                <Label htmlFor="password">Palavra-passe</Label>
                 <Input
                   id="password"
                   type="password"
                   required
                   minLength={6}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setPalavra-passe(e.target.value)}
                   placeholder="••••••••"
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={busy}>
-                {mode === "signin" ? "Sign in" : "Create account"}
+              <Button type="submit" classNome="w-full" disabled={busy}>
+                {mode === "signin" ? "Iniciar sessão" : "Criar conta"}
               </Button>
             </form>
-            <div className="flex items-center justify-between text-sm">
+            <div classNome="flex items-center justify-between text-sm">
               <button
                 type="button"
-                className="text-muted-foreground underline-offset-4 hover:underline"
+                classNome="text-muted-foreground underline-offset-4 hover:underline"
                 onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
               >
-                {mode === "signin" ? "Create an account" : "I already have an account"}
+                {mode === "signin" ? "Criar uma conta" : "Já tenho uma conta"}
               </button>
               {mode === "signin" && (
                 <button
                   type="button"
-                  className="text-muted-foreground underline-offset-4 hover:underline"
+                  classNome="text-muted-foreground underline-offset-4 hover:underline"
                   onClick={handleReset}
                 >
-                  Forgot password?
+                  Esqueceu-se da palavra-passe?
                 </button>
               )}
             </div>
