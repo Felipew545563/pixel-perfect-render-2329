@@ -206,7 +206,7 @@ export const importVideo = createServerFn({ method: "POST" })
         status: transcript ? "pending" : "awaiting_transcript",
         error_message: transcript
           ? null
-          : "Adicione a transcrição deste vídeo para a IA encontrar os melhores momentos.",
+          : "Use a análise automática do ficheiro original, ou cole as legendas, para a IA encontrar os melhores momentos.",
       })
       .select()
       .single();
@@ -246,6 +246,7 @@ export const updateVideo = createServerFn({ method: "POST" })
         id: z.string().uuid(),
         title: z.string().trim().min(1).max(300).optional(),
         transcript: z.string().max(400_000).optional(),
+        transcriptSource: z.enum(["user", "auto"]).optional(),
         durationSeconds: z.number().int().min(0).max(60 * 60 * 24).nullable().optional(),
         projectId: z.string().uuid().nullable().optional(),
       })
@@ -259,9 +260,11 @@ export const updateVideo = createServerFn({ method: "POST" })
     if (data.transcript !== undefined) {
       const transcript = data.transcript.trim();
       patch["transcript"] = transcript || null;
-      patch["transcript_source"] = transcript ? "user" : null;
+      patch["transcript_source"] = transcript ? (data.transcriptSource ?? "user") : null;
       patch["status"] = transcript ? "pending" : "awaiting_transcript";
-      patch["error_message"] = transcript ? null : "Adicione a transcrição para a IA encontrar os melhores momentos.";
+      patch["error_message"] = transcript
+        ? null
+        : "Use a análise automática do ficheiro original ou cole as legendas do vídeo.";
     }
     const { error } = await context.supabase.from("videos").update(patch as never).eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -291,6 +294,18 @@ export const analyzeVideo = createServerFn({ method: "POST" })
         lengthPreset: z.enum(["short", "medium", "long", "auto"]).default("auto"),
         language: z.string().trim().min(2).max(40).default("português de Portugal"),
         replaceExisting: z.boolean().default(true),
+        detectionMode: z.enum(["hybrid", "speech", "energy"]).default("hybrid"),
+        energyPeaks: z
+          .array(
+            z.object({
+              startSeconds: z.number().min(0),
+              endSeconds: z.number().min(0),
+              intensity: z.number().min(0).max(100),
+            }),
+          )
+          .max(60)
+          .optional(),
+        frames: z.array(z.string().max(400_000)).max(10).optional(),
       })
       .parse(data),
   )
@@ -301,31 +316,23 @@ export const analyzeVideo = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     if (!video) throw new Error("Vídeo não encontrado.");
 
-    const transcript = video.transcript?.trim();
-    if (!transcript || transcript.length < 200) {
+    const transcript = video.transcript?.trim() ?? "";
+    const peaks = data.energyPeaks ?? [];
+    const frames = data.frames ?? [];
+    const hasSpeech = transcript.length >= 200;
+    const hasSignal = hasSpeech || peaks.length >= 3 || frames.length >= 3;
+
+    if (!hasSignal) {
       await supabase
         .from("videos")
         .update({
           status: "awaiting_transcript",
-          error_message: "A transcrição está em falta ou é demasiado curta para analisar.",
+          error_message:
+            "Faça a análise automática do ficheiro original ou cole as legendas para a IA encontrar os melhores momentos.",
         })
         .eq("id", video.id);
-      throw new Error("Adicione a transcrição completa deste vídeo antes de executar a análise.");
-    }
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("credits_minutes")
-      .eq("id", userId)
-      .maybeSingle();
-
-    const estimatedMinutes = Math.max(
-      1,
-      Math.ceil((video.duration_seconds ?? transcript.split(/\s+/).length / 150 * 60) / 60),
-    );
-    if ((profile?.credits_minutes ?? 0) < estimatedMinutes) {
       throw new Error(
-        `Não tem minutos de processamento suficientes. Este vídeo necessita de cerca de ${estimatedMinutes} minutos.`,
+        "Não há dados suficientes para analisar. Use a análise automática do ficheiro original ou cole as legendas do vídeo.",
       );
     }
 
@@ -339,6 +346,9 @@ export const analyzeVideo = createServerFn({ method: "POST" })
         clipCount: data.clipCount,
         lengthPreset: data.lengthPreset,
         language: data.language,
+        detectionMode: data.detectionMode,
+        energyPeaks: peaks,
+        frames,
       });
 
       if (data.replaceExisting) {
@@ -370,20 +380,21 @@ export const analyzeVideo = createServerFn({ method: "POST" })
       const { error: insertError } = await supabase.from("clips").insert(rows);
       if (insertError) throw new Error(insertError.message);
 
+      const minutes = Math.max(
+        1,
+        Math.ceil((video.duration_seconds ?? (transcript.split(/\s+/).length / 150) * 60) / 60),
+      );
+
       await supabase.from("videos").update({ status: "completed", error_message: null }).eq("id", video.id);
       await supabase.from("usage_events").insert({
         user_id: userId,
         video_id: video.id,
         kind: "analysis",
-        minutes_used: estimatedMinutes,
-        note: `${rows.length} clipes encontrados`,
+        minutes_used: minutes,
+        note: `${rows.length} clipes encontrados · modo ${data.detectionMode}`,
       });
-      await supabase
-        .from("profiles")
-        .update({ credits_minutes: Math.max(0, (profile?.credits_minutes ?? 0) - estimatedMinutes) })
-        .eq("id", userId);
 
-      return { clips: rows.length, minutesUsed: estimatedMinutes };
+      return { clips: rows.length, minutesUsed: minutes };
     } catch (err) {
       const message = err instanceof Error ? err.message : "A análise falhou.";
       await supabase.from("videos").update({ status: "failed", error_message: message }).eq("id", video.id);

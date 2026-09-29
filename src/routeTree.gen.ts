@@ -17,6 +17,7 @@ import { Route as AuthenticatedCreateRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedUsageRouteImport } from './routes/_authenticated/usage'
+import { Route as ApiTranscribeRouteImport } from './routes/api/transcribe'
 import { Route as AuthenticatedVideosIndexRouteImport } from './routes/_authenticated/videos.index'
 import { Route as AuthenticatedVideosVideoIdRouteImport } from './routes/_authenticated/videos.$videoId'
 
@@ -59,6 +60,11 @@ const AuthenticatedUsageRoute = AuthenticatedUsageRouteImport.update({
   path: '/usage',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiTranscribeRoute = ApiTranscribeRouteImport.update({
+  id: '/api/transcribe',
+  path: '/api/transcribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedVideosIndexRoute =
   AuthenticatedVideosIndexRouteImport.update({
     id: '/videos/',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/usage': typeof AuthenticatedUsageRoute
+  '/api/transcribe': typeof ApiTranscribeRoute
   '/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
   '/videos/': typeof AuthenticatedVideosIndexRoute
 }
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/usage': typeof AuthenticatedUsageRoute
+  '/api/transcribe': typeof ApiTranscribeRoute
   '/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
   '/videos': typeof AuthenticatedVideosIndexRoute
 }
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/usage': typeof AuthenticatedUsageRoute
+  '/api/transcribe': typeof ApiTranscribeRoute
   '/_authenticated/videos/$videoId': typeof AuthenticatedVideosVideoIdRoute
   '/_authenticated/videos/': typeof AuthenticatedVideosIndexRoute
 }
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/projects'
     | '/usage'
+    | '/api/transcribe'
     | '/videos/$videoId'
     | '/videos/'
   fileRoutesByTo: FileRoutesByTo
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/projects'
     | '/usage'
+    | '/api/transcribe'
     | '/videos/$videoId'
     | '/videos'
   id:
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/projects'
     | '/_authenticated/usage'
+    | '/api/transcribe'
     | '/_authenticated/videos/$videoId'
     | '/_authenticated/videos/'
   fileRoutesById: FileRoutesById
@@ -148,6 +160,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiTranscribeRoute: typeof ApiTranscribeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -208,6 +221,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsageRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/transcribe': {
+      id: '/api/transcribe'
+      path: '/api/transcribe'
+      fullPath: '/api/transcribe'
+      preLoaderRoute: typeof ApiTranscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/videos/': {
       id: '/_authenticated/videos/'
       path: '/videos'
@@ -252,6 +272,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiTranscribeRoute: ApiTranscribeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

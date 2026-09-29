@@ -72,11 +72,11 @@ function VideosPage() {
               )}
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium">{video.title}</p>
-                <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                   <span>{SOURCE_LABELS[video.source as keyof typeof SOURCE_LABELS] ?? video.source}</span>
                   <span>{formatDuration(video.duration_seconds)}</span>
                   <Badge variant="secondary">{VIDEO_STATUS_LABELS[video.status] ?? video.status}</Badge>
-                </p>
+                </div>
                 {video.error_message && (
                   <p className="mt-1 truncate text-xs text-destructive">{video.error_message}</p>
                 )}

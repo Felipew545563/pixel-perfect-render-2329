@@ -28,9 +28,19 @@ function gatewayError(message: string, status: number): GatewayError {
 }
 
 /** Streams a Responses call and returns the accumulated text. */
-async function runModel(instructions: string, prompt: string, signal?: AbortSignal): Promise<string> {
+async function runModel(
+  instructions: string,
+  prompt: string,
+  images: string[] = [],
+  signal?: AbortSignal,
+): Promise<string> {
   const apiKey = process.env["LOVABLE_API_KEY"];
   if (!apiKey) throw gatewayError("A IA não está configurada para esta aplicação.", 401);
+
+  const userContent: Array<Record<string, unknown>> = [{ type: "input_text", text: prompt }];
+  for (const image of images.slice(0, 10)) {
+    userContent.push({ type: "input_image", image_url: image, detail: "low" });
+  }
 
   const response = await fetch(GATEWAY_URL, {
     method: "POST",
@@ -48,7 +58,7 @@ async function runModel(instructions: string, prompt: string, signal?: AbortSign
       include: ["reasoning.encrypted_content"],
       input: [
         { role: "system", content: [{ type: "input_text", text: instructions }] },
-        { role: "user", content: [{ type: "input_text", text: prompt }] },
+        { role: "user", content: userContent },
       ],
     }),
   });
@@ -128,6 +138,10 @@ const clamp = (value: unknown, min: number, max: number, fallback: number) => {
 const str = (value: unknown, fallback = "") =>
   typeof value === "string" && value.trim() ? value.trim() : fallback;
 
+export type EnergyPeakInput = { startSeconds: number; endSeconds: number; intensity: number };
+
+export type DetectionMode = "hybrid" | "speech" | "energy";
+
 export type FindClipsOptions = {
   transcript: string;
   videoTitle: string;
@@ -135,6 +149,9 @@ export type FindClipsOptions = {
   clipCount: number;
   lengthPreset: "short" | "medium" | "long" | "auto";
   language: string;
+  detectionMode?: DetectionMode;
+  energyPeaks?: EnergyPeakInput[];
+  frames?: string[];
 };
 
 const LENGTH_HINTS: Record<FindClipsOptions["lengthPreset"], string> = {
@@ -144,34 +161,84 @@ const LENGTH_HINTS: Record<FindClipsOptions["lengthPreset"], string> = {
   auto: "Choose the ideal length per clip, between 15 and 180 seconds.",
 };
 
+const MODE_HINTS: Record<DetectionMode, string> = {
+  hybrid:
+    "Weigh three signals together: the narrative in the transcript, the acoustic energy peaks (laughter, shouting, applause, excitement) and the still frames. A moment backed by two or more signals is stronger than one backed by a single signal.",
+  speech:
+    "Prioritise narrative and semantic quality: complete arguments, stories, strong statements and clear punchlines in the transcript.",
+  energy:
+    "Prioritise high-energy reactions: laughter, shouting, surprise, applause and sudden loudness. Use the acoustic energy peaks as the main guide and the transcript only to set clean boundaries.",
+};
+
+function formatClock(totalSeconds: number): string {
+  const s = Math.max(0, Math.round(totalSeconds));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+}
+
 export async function findClips(
   options: FindClipsOptions,
   signal?: AbortSignal,
 ): Promise<ClipCandidate[]> {
+  const mode = options.detectionMode ?? "hybrid";
+  const peaks = (options.energyPeaks ?? []).slice(0, 60);
+  const frames = options.frames ?? [];
+  const transcript = options.transcript.trim();
+
   const instructions = [
     "You are an expert short-form video editor who finds the strongest standalone moments in long recordings.",
-    "You receive a transcript and must return the best self-contained segments for TikTok, Reels and Shorts.",
+    "You receive any combination of: a timecoded transcript, a list of acoustic energy peaks measured from the audio waveform, and still frames sampled from the video.",
+    "Return the best self-contained segments for TikTok, Reels and Shorts.",
     "Each segment must follow HOOK -> DEVELOPMENT -> PAYOFF, start and end on a natural sentence boundary, and never cut mid-sentence.",
     "Avoid silence, filler and segments that need missing context.",
+    MODE_HINTS[mode],
+    "The transcript may come from automatic speech recognition and can contain mistakes; rely on meaning, not exact wording, and never quote a garbled sentence as the hook.",
     LENGTH_HINTS[options.lengthPreset],
     "Scores are internal quality estimates from 0 to 100, never a guarantee of virality.",
+    'In "reasoning", name the signals that justified the moment (for example the energy peak time, the narrative turn, or what is visible on screen).',
     `Write all generated text in ${options.language}. When writing Portuguese, always use European Portuguese (pt-PT), never Brazilian Portuguese.`,
     "Return ONLY a JSON array, no prose, no markdown fences. Each item has exactly these keys:",
     '"title", "hook", "description", "start_seconds", "end_seconds", "clip_score", "hook_score", "emotion_score", "clarity_score", "reasoning", "transcript_excerpt", "hashtags" (array of strings without #), "caption_tiktok", "caption_instagram", "youtube_title".',
-    "Timestamps are seconds from the start of the video. If the transcript has timecodes, use them; otherwise estimate from reading pace (~150 words per minute).",
+    "Timestamps are seconds from the start of the video. Prefer transcript timecodes and energy peak times; only estimate from reading pace (~150 words per minute) when no timing data exists.",
     "Order the array by clip_score, best first.",
   ].join("\n");
 
-  const prompt = [
+  const promptParts = [
     `Video title: ${options.videoTitle}`,
     options.durationSeconds ? `Video duration: ${options.durationSeconds} seconds` : "Video duration: unknown",
     `Number of clips to return: ${options.clipCount}`,
-    "",
-    "TRANSCRIPT:",
-    options.transcript.slice(0, 120_000),
-  ].join("\n");
+    `Detection mode: ${mode}`,
+  ];
 
-  const raw = await runModel(instructions, prompt, signal);
+  if (peaks.length) {
+    promptParts.push(
+      "",
+      "ACOUSTIC ENERGY PEAKS (start -> end, intensity 0-100, measured from the waveform):",
+      peaks
+        .map(
+          (peak) =>
+            `${formatClock(peak.startSeconds)} -> ${formatClock(peak.endSeconds)} (${peak.startSeconds}s-${peak.endSeconds}s) intensity ${peak.intensity}`,
+        )
+        .join("\n"),
+    );
+  }
+
+  if (frames.length) {
+    promptParts.push(
+      "",
+      `${frames.length} still frames from the video are attached, sampled around the strongest moments, in chronological order.`,
+    );
+  }
+
+  promptParts.push(
+    "",
+    transcript
+      ? `TRANSCRIPT:\n${transcript.slice(0, 120_000)}`
+      : "No transcript is available. Base the segments on the energy peaks and the attached frames, and keep the generated text generic enough to stay accurate.",
+  );
+
+  const raw = await runModel(instructions, promptParts.join("\n"), frames, signal);
   const parsed = extractJson(raw);
   const list = Array.isArray(parsed)
     ? parsed

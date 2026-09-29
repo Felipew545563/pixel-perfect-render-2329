@@ -33,7 +33,9 @@ function UsagePage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Utilização e plano</h1>
-        <p className="text-sm text-muted-foreground">Cada análise utiliza minutos de processamento de acordo com a duração do vídeo.</p>
+        <p className="text-sm text-muted-foreground">
+          Sem limite de minutos: pode analisar quantos vídeos quiser, com a duração que quiser.
+        </p>
       </div>
 
       {isLoading && <p className="text-sm text-muted-foreground">A carregar…</p>}
@@ -41,13 +43,13 @@ function UsagePage() {
       {data && (
         <div className="grid gap-3 sm:grid-cols-3">
           {[
-            ["Minutos restantes", data.profile?.credits_minutes ?? 0],
-            ["Minutos utilizados", data.totals.minutesUsed],
-            ["Clipes este mês", data.totals.clipsThisMonth],
+            ["Minutos disponíveis", "Ilimitado"],
+            ["Minutos analisados", String(data.totals.minutesUsed)],
+            ["Clipes este mês", String(data.totals.clipsThisMonth)],
           ].map(([label, value]) => (
             <div key={String(label)} className="rounded-lg border border-border bg-card p-4">
               <p className="text-xs text-muted-foreground">{label}</p>
-              <p className="mt-1 text-2xl font-semibold">{value as number}</p>
+              <p className="mt-1 text-2xl font-semibold">{value}</p>
             </div>
           ))}
         </div>
