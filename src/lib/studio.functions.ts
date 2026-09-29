@@ -206,7 +206,7 @@ export const importVideo = createServerFn({ method: "POST" })
         status: transcript ? "pending" : "awaiting_transcript",
         error_message: transcript
           ? null
-          : "Adicione a transcrição deste vídeo para a IA encontrar os melhores momentos.",
+          : "Use a análise automática do ficheiro original, ou cole as legendas, para a IA encontrar os melhores momentos.",
       })
       .select()
       .single();
