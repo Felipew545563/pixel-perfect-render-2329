@@ -21,12 +21,12 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 const NAV = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/create", label: "Create clips", icon: Sparkles },
-  { to: "/videos", label: "Videos", icon: Film },
-  { to: "/clips", label: "My clips", icon: Scissors },
-  { to: "/projects", label: "Projects", icon: FolderKanban },
-  { to: "/usage", label: "Usage", icon: Gauge },
+  { to: "/dashboard", label: "Painel", icon: LayoutDashboard },
+  { to: "/create", label: "Criar clipes", icon: Sparkles },
+  { to: "/videos", label: "Vídeos", icon: Film },
+  { to: "/clips", label: "Os meus clipes", icon: Scissors },
+  { to: "/projects", label: "Projetos", icon: FolderKanban },
+  { to: "/usage", label: "Utilização", icon: Gauge },
 ] as const;
 
 function AuthenticatedLayout() {
@@ -51,7 +51,7 @@ function AuthenticatedLayout() {
   if (loading || !session) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
-        Loading your workspace…
+        A carregar o seu espaço de trabalho…
       </div>
     );
   }
@@ -95,7 +95,7 @@ function AuthenticatedLayout() {
               navigate({ to: "/auth" });
             }}
           >
-            <LogOut className="mr-2 size-4" /> Sign out
+            <LogOut className="mr-2 size-4" /> Terminar sessão
           </Button>
         </div>
       </aside>

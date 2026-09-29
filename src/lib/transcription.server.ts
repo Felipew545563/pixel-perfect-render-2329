@@ -21,6 +21,6 @@ export function hasTranscriptionProvider(): boolean {
 export async function requestRemoteTranscript(_mediaUrl: string): Promise<TranscriptResult> {
   // <-- ADD THE PROVIDER CALL HERE once TRANSCRIPTION_API_KEY is configured.
   throw new Error(
-    "Automatic transcription is not connected yet. Paste the transcript for now, or add a speech-to-text provider key.",
+    "A transcrição automática ainda não está ligada. Por agora, cole a transcrição ou adicione uma chave de um serviço de conversão de voz em texto.",
   );
 }

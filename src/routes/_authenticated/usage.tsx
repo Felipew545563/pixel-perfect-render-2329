@@ -7,10 +7,10 @@ import { getOverview } from "@/lib/studio.functions";
 export const Route = createFileRoute("/_authenticated/usage")({
   head: () => ({
     meta: [
-      { title: "Usage · ClipForge Studio" },
-      { name: "description", content: "Processing minutes left, clips generated and current plan." },
-      { property: "og:title", content: "Usage · ClipForge Studio" },
-      { property: "og:description", content: "Processing minutes left, clips generated and current plan." },
+      { title: "Utilização · ClipForge Studio" },
+      { name: "description", content: "Minutos de processamento restantes, clipes gerados e plano atual." },
+      { property: "og:title", content: "Utilização · ClipForge Studio" },
+      { property: "og:description", content: "Minutos de processamento restantes, clipes gerados e plano atual." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -19,10 +19,10 @@ export const Route = createFileRoute("/_authenticated/usage")({
 });
 
 const PLANS = [
-  { name: "Free", detail: "120 processing minutes, up to 5 clips per video." },
-  { name: "Creator", detail: "More minutes, up to 10 clips per video, no watermark." },
-  { name: "Pro", detail: "Advanced detection, up to 20 clips per video, templates." },
-  { name: "Business", detail: "Highest limits, multiple seats, priority processing." },
+  { name: "Gratuito", detail: "120 minutos de processamento e até 5 clipes por vídeo." },
+  { name: "Creator", detail: "Mais minutos, até 10 clipes por vídeo e sem marca de água." },
+  { name: "Pro", detail: "Deteção avançada, até 20 clipes por vídeo e modelos." },
+  { name: "Business", detail: "Limites mais elevados, vários utilizadores e processamento prioritário." },
 ];
 
 function UsagePage() {
@@ -32,18 +32,18 @@ function UsagePage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Usage & plan</h1>
-        <p className="text-sm text-muted-foreground">Each analysis uses processing minutes based on video length.</p>
+        <h1 className="text-2xl font-semibold tracking-tight">Utilização e plano</h1>
+        <p className="text-sm text-muted-foreground">Cada análise utiliza minutos de processamento de acordo com a duração do vídeo.</p>
       </div>
 
-      {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+      {isLoading && <p className="text-sm text-muted-foreground">A carregar…</p>}
 
       {data && (
         <div className="grid gap-3 sm:grid-cols-3">
           {[
-            ["Minutes left", data.profile?.credits_minutes ?? 0],
-            ["Minutes used", data.totals.minutesUsed],
-            ["Clips this month", data.totals.clipsThisMonth],
+            ["Minutos restantes", data.profile?.credits_minutes ?? 0],
+            ["Minutos utilizados", data.totals.minutesUsed],
+            ["Clipes este mês", data.totals.clipsThisMonth],
           ].map(([label, value]) => (
             <div key={String(label)} className="rounded-lg border border-border bg-card p-4">
               <p className="text-xs text-muted-foreground">{label}</p>
@@ -54,9 +54,9 @@ function UsagePage() {
       )}
 
       <section className="space-y-2">
-        <h2 className="font-medium">Plans</h2>
+        <h2 className="font-medium">Planos</h2>
         <p className="text-sm text-muted-foreground">
-          Everyone is on the Free plan for now. Paid plans and checkout are not connected yet.
+          Por enquanto, todos utilizam o plano Gratuito. Os planos pagos e o pagamento ainda não estão disponíveis.
         </p>
         <ul className="grid gap-2">
           {PLANS.map((plan) => (

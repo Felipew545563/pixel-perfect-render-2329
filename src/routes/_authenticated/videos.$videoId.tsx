@@ -18,10 +18,10 @@ import { SOURCE_LABELS, VIDEO_STATUS_LABELS, formatDuration } from "@/lib/source
 export const Route = createFileRoute("/_authenticated/videos/$videoId")({
   head: () => ({
     meta: [
-      { title: "Video analysis · ClipForge Studio" },
-      { name: "description", content: "Transcript, AI analysis and generated clips for this video." },
-      { property: "og:title", content: "Video analysis · ClipForge Studio" },
-      { property: "og:description", content: "Transcript, AI analysis and generated clips for this video." },
+      { title: "Análise do vídeo · ClipForge Studio" },
+      { name: "description", content: "Transcrição, análise com IA e clipes gerados para este vídeo." },
+      { property: "og:title", content: "Análise do vídeo · ClipForge Studio" },
+      { property: "og:description", content: "Transcrição, análise com IA e clipes gerados para este vídeo." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -51,7 +51,7 @@ function VideoDetail() {
   const [transcript, setTranscript] = useState("");
   const [clipCount, setClipCount] = useState("5");
   const [lengthPreset, setLengthPreset] = useState<"short" | "medium" | "long" | "auto">("auto");
-  const [language, setLanguage] = useState("the same language as the transcript");
+  const [language, setLanguage] = useState("português de Portugal");
   const [sort, setSort] = useState<SortKey>("score");
 
   useEffect(() => {
@@ -68,7 +68,7 @@ function VideoDetail() {
   const transcriptMutation = useMutation({
     mutationFn: () => saveVideo({ data: { id: videoId, transcript } }),
     onSuccess: () => {
-      toast.success("Transcript saved");
+      toast.success("Transcrição guardada");
       invalidate();
     },
     onError: (err: Error) => toast.error(err.message),
@@ -86,7 +86,7 @@ function VideoDetail() {
         },
       }),
     onSuccess: (result) => {
-      toast.success(`${(result as { clips: number }).clips} clips generated`);
+      toast.success(`${(result as { clips: number }).clips} clipes gerados`);
       invalidate();
     },
     onError: (err: Error) => toast.error(err.message),
@@ -96,7 +96,7 @@ function VideoDetail() {
     mutationFn: (patch: Parameters<typeof saveClip>[0] extends never ? never : Record<string, unknown>) =>
       saveClip({ data: patch as never }),
     onSuccess: () => {
-      toast.success("Clip updated");
+      toast.success("Clipe atualizado");
       invalidate();
     },
     onError: (err: Error) => toast.error(err.message),
@@ -105,13 +105,13 @@ function VideoDetail() {
   const clipDeleteMutation = useMutation({
     mutationFn: (id: string) => removeClip({ data: { id } }),
     onSuccess: () => {
-      toast.success("Clip deleted");
+      toast.success("Clipe eliminado");
       invalidate();
     },
     onError: (err: Error) => toast.error(err.message),
   });
 
-  if (isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
+  if (isLoading) return <p className="text-sm text-muted-foreground">A carregar…</p>;
   if (error) return <p className="text-sm text-destructive">{(error as Error).message}</p>;
   if (!data) return null;
 
@@ -133,7 +133,7 @@ function VideoDetail() {
             <span>{formatDuration(video.duration_seconds)}</span>
             <Badge variant="secondary">{VIDEO_STATUS_LABELS[video.status] ?? video.status}</Badge>
             <a href={video.url} target="_blank" rel="noreferrer" className="underline">
-              Open original
+              Abrir original
             </a>
           </div>
           {video.error_message && <p className="mt-2 text-sm text-destructive">{video.error_message}</p>}
@@ -142,16 +142,16 @@ function VideoDetail() {
           variant="ghost"
           onClick={async () => {
             await removeVideo({ data: { id: videoId } });
-            toast.success("Video deleted");
+            toast.success("Vídeo eliminado");
             navigate({ to: "/videos" });
           }}
         >
-          <Trash2 className="mr-1 size-4" /> Delete video
+          <Trash2 className="mr-1 size-4" /> Eliminar vídeo
         </Button>
       </div>
 
       <section className="space-y-3 rounded-lg border border-border bg-card p-4">
-        <h2 className="font-medium">Transcript</h2>
+        <h2 className="font-medium">Transcrição</h2>
         <Textarea rows={10} value={transcript} onChange={(e) => setTranscript(e.target.value)} />
         <div className="flex flex-wrap gap-2">
           <Button
@@ -159,19 +159,19 @@ function VideoDetail() {
             onClick={() => transcriptMutation.mutate()}
             disabled={transcriptMutation.isPending}
           >
-            Save transcript
+            Guardar transcrição
           </Button>
           <p className="self-center text-xs text-muted-foreground">
-            Timecodes like 00:01:24 make clip timings far more precise.
+            Os códigos de tempo, como 00:01:24, tornam os tempos dos clipes muito mais precisos.
           </p>
         </div>
       </section>
 
       <section className="space-y-4 rounded-lg border border-border bg-card p-4">
-        <h2 className="font-medium">AI clip detection</h2>
+        <h2 className="font-medium">Deteção de clipes com IA</h2>
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="space-y-1">
-            <Label>Number of clips</Label>
+            <Label>Número de clipes</Label>
             <Select value={clipCount} onValueChange={setClipCount}>
               <SelectTrigger>
                 <SelectValue />
@@ -179,58 +179,58 @@ function VideoDetail() {
               <SelectContent>
                 {["3", "5", "10", "20"].map((value) => (
                   <SelectItem key={value} value={value}>
-                    {value} clips
+                    {value} clipes
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1">
-            <Label>Clip length</Label>
+            <Label>Duração do clipe</Label>
             <Select value={lengthPreset} onValueChange={(v) => setLengthPreset(v as typeof lengthPreset)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="auto">AI decides</SelectItem>
-                <SelectItem value="short">Short · 15–30s</SelectItem>
-                <SelectItem value="medium">Medium · 30–60s</SelectItem>
-                <SelectItem value="long">Long · 60–180s</SelectItem>
+                <SelectItem value="auto">Decisão da IA</SelectItem>
+                <SelectItem value="short">Curto · 15–30 s</SelectItem>
+                <SelectItem value="medium">Médio · 30–60 s</SelectItem>
+                <SelectItem value="long">Longo · 60–180 s</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1">
-            <Label>Language of the text</Label>
+            <Label>Idioma do texto</Label>
             <Input value={language} onChange={(e) => setLanguage(e.target.value)} />
           </div>
         </div>
         <Button size="lg" onClick={() => analysisMutation.mutate()} disabled={analysisMutation.isPending}>
           <Sparkles className="mr-1 size-4" />
-          {analysisMutation.isPending ? "Analyzing…" : clips.length ? "Re-run analysis" : "Find the best moments"}
+          {analysisMutation.isPending ? "A analisar…" : clips.length ? "Repetir análise" : "Encontrar os melhores momentos"}
         </Button>
         <p className="text-xs text-muted-foreground">
-          Re-running replaces the current clips of this video. Scores are quality estimates, not a guarantee of
-          virality.
+          Repetir a análise substitui os clipes atuais deste vídeo. As pontuações são estimativas de qualidade, não uma garantia de
+          viralidade.
         </p>
       </section>
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-medium">Generated clips ({clips.length})</h2>
+          <h2 className="font-medium">Clipes gerados ({clips.length})</h2>
           <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
             <SelectTrigger className="w-44">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="score">Sort by score</SelectItem>
-              <SelectItem value="duration">Sort by duration</SelectItem>
-              <SelectItem value="position">Sort by order</SelectItem>
+              <SelectItem value="score">Ordenar por pontuação</SelectItem>
+              <SelectItem value="duration">Ordenar por duração</SelectItem>
+              <SelectItem value="position">Ordenar por ordem</SelectItem>
             </SelectContent>
           </Select>
         </div>
         {clips.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            No clips yet. Save the transcript and run the analysis above.
+            Ainda não existem clipes. Guarde a transcrição e execute a análise acima.
           </p>
         ) : (
           <div className="grid gap-3">

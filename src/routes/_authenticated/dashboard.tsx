@@ -11,18 +11,18 @@ import { formatDuration, formatTimecode, SOURCE_LABELS, VIDEO_STATUS_LABELS } fr
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard · ClipForge Studio" },
-      { name: "description", content: "Your videos, clips and processing usage at a glance." },
-      { property: "og:title", content: "Dashboard · ClipForge Studio" },
-      { property: "og:description", content: "Your videos, clips and processing usage at a glance." },
+      { title: "Painel · ClipForge Studio" },
+      { name: "description", content: "Os seus vídeos, clipes e utilização de processamento num só lugar." },
+      { property: "og:title", content: "Painel · ClipForge Studio" },
+      { property: "og:description", content: "Os seus vídeos, clipes e utilização de processamento num só lugar." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Dashboard,
+  component: Painel,
 });
 
-function Dashboard() {
+function Painel() {
   const fetchOverview = useServerFn(getOverview);
   const { data, isLoading, error } = useQuery({ queryKey: ["overview"], queryFn: () => fetchOverview({}) });
 
@@ -30,27 +30,27 @@ function Dashboard() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Everything you have processed so far.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Painel</h1>
+          <p className="text-sm text-muted-foreground">Tudo o que processou até ao momento.</p>
         </div>
         <Button asChild size="lg">
           <Link to="/create">
-            <Plus className="mr-1 size-4" /> Create clips
+            <Plus className="mr-1 size-4" /> Criar clipes
           </Link>
         </Button>
       </div>
 
       {error && <p className="text-sm text-destructive">{(error as Error).message}</p>}
-      {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+      {isLoading && <p className="text-sm text-muted-foreground">A carregar…</p>}
 
       {data && (
         <>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              ["Videos processed", data.totals.videos],
-              ["Clips created", data.totals.clips],
-              ["Clips this month", data.totals.clipsThisMonth],
-              ["Minutes left", data.profile?.credits_minutes ?? 0],
+              ["Vídeos processados", data.totals.videos],
+              ["Clipes criados", data.totals.clips],
+              ["Clipes este mês", data.totals.clipsThisMonth],
+              ["Minutos restantes", data.profile?.credits_minutes ?? 0],
             ].map(([label, value]) => (
               <div key={String(label)} className="rounded-lg border border-border bg-card p-4">
                 <p className="text-xs text-muted-foreground">{label}</p>
@@ -62,13 +62,13 @@ function Dashboard() {
           <div className="grid gap-4 lg:grid-cols-2">
             <section className="rounded-lg border border-border bg-card p-4">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="font-medium">Recent videos</h2>
+                <h2 className="font-medium">Vídeos recentes</h2>
                 <Link to="/videos" className="text-sm text-primary underline-offset-4 hover:underline">
-                  See all
+                  Ver tudo
                 </Link>
               </div>
               {data.recentVideos.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Nothing imported yet.</p>
+                <p className="text-sm text-muted-foreground">Ainda não foi importado nenhum vídeo.</p>
               ) : (
                 <ul className="space-y-2">
                   {data.recentVideos.map((video) => (
@@ -95,20 +95,20 @@ function Dashboard() {
 
             <section className="rounded-lg border border-border bg-card p-4">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="font-medium">Newest clips</h2>
+                <h2 className="font-medium">Clipes mais recentes</h2>
                 <Link to="/clips" className="text-sm text-primary underline-offset-4 hover:underline">
-                  See all
+                  Ver tudo
                 </Link>
               </div>
               {data.recentClips.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No clips yet.</p>
+                <p className="text-sm text-muted-foreground">Ainda não existem clipes.</p>
               ) : (
                 <ul className="space-y-2">
                   {data.recentClips.map((clip) => (
                     <li key={clip.id} className="flex items-center justify-between gap-3">
                       <span className="min-w-0 truncate text-sm">{clip.title}</span>
                       <span className="shrink-0 text-xs text-muted-foreground">
-                        {formatTimecode(Number(clip.start_seconds))} · score {clip.clip_score ?? "—"}
+                        {formatTimecode(Number(clip.start_seconds))} · pontuação {clip.clip_score ?? "—"}
                       </span>
                     </li>
                   ))}

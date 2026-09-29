@@ -12,10 +12,10 @@ import { SOURCE_LABELS, VIDEO_STATUS_LABELS, formatDuration } from "@/lib/source
 export const Route = createFileRoute("/_authenticated/videos/")({
   head: () => ({
     meta: [
-      { title: "Videos · ClipForge Studio" },
-      { name: "description", content: "All the long videos you imported, with their processing status." },
-      { property: "og:title", content: "Videos · ClipForge Studio" },
-      { property: "og:description", content: "All the long videos you imported, with their processing status." },
+      { title: "Vídeos · ClipForge Studio" },
+      { name: "description", content: "Todos os vídeos longos que importou, com o respetivo estado de processamento." },
+      { property: "og:title", content: "Vídeos · ClipForge Studio" },
+      { property: "og:description", content: "Todos os vídeos longos que importou, com o respetivo estado de processamento." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -42,19 +42,19 @@ function VideosPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Videos</h1>
-          <p className="text-sm text-muted-foreground">Search by title, link or words inside the transcript.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Vídeos</h1>
+          <p className="text-sm text-muted-foreground">Pesquise por título, ligação ou palavras da transcrição.</p>
         </div>
         <Button asChild>
-          <Link to="/create">Import video</Link>
+          <Link to="/create">Importar vídeo</Link>
         </Button>
       </div>
 
-      <Input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Search videos and transcripts…" />
+      <Input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Pesquisar vídeos e transcrições…" />
 
-      {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+      {isLoading && <p className="text-sm text-muted-foreground">A carregar…</p>}
       {!isLoading && videos.length === 0 && (
-        <p className="text-sm text-muted-foreground">No videos match your search yet.</p>
+        <p className="text-sm text-muted-foreground">Nenhum vídeo corresponde à sua pesquisa.</p>
       )}
 
       <ul className="grid gap-3">

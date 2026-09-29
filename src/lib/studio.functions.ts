@@ -22,7 +22,7 @@ async function lookupMetadata(
   sourceId: string | null,
 ): Promise<Metadata> {
   const fallback: Metadata = {
-    title: sourceId ? `${source} · ${sourceId}` : "Imported video",
+    title: sourceId ? `${source} · ${sourceId}` : "Vídeo importado",
     thumbnailUrl: null,
     author: null,
     durationSeconds: null,
@@ -165,7 +165,7 @@ export const inspectUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => z.object({ url: z.string().trim().min(5).max(2000) }).parse(data))
   .handler(async ({ data }) => {
     const detected = detectSource(data.url);
-    if (!detected) throw new Error("That link is not a valid URL. Paste a full address starting with https://");
+    if (!detected) throw new Error("Esta ligação não é um URL válido. Cole um endereço completo começado por https://");
     const meta = await lookupMetadata(detected.source, detected.normalizedUrl, detected.sourceId);
     return { ...detected, ...meta };
   });
@@ -184,7 +184,7 @@ export const importVideo = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const detected = detectSource(data.url);
-    if (!detected) throw new Error("That link is not a valid URL. Paste a full address starting with https://");
+    if (!detected) throw new Error("Esta ligação não é um URL válido. Cole um endereço completo começado por https://");
 
     const meta = await lookupMetadata(detected.source, detected.normalizedUrl, detected.sourceId);
     const transcript = data.transcript?.trim() || null;
@@ -206,7 +206,7 @@ export const importVideo = createServerFn({ method: "POST" })
         status: transcript ? "pending" : "awaiting_transcript",
         error_message: transcript
           ? null
-          : "Add the transcript of this video so the AI can find the best moments.",
+          : "Adicione a transcrição deste vídeo para a IA encontrar os melhores momentos.",
       })
       .select()
       .single();
@@ -234,7 +234,7 @@ export const getVideo = createServerFn({ method: "POST" })
       context.supabase.from("clips").select("*").eq("video_id", data.id).order("position", { ascending: true }),
     ]);
     if (videoRes.error) throw new Error(videoRes.error.message);
-    if (!videoRes.data) throw new Error("Video not found.");
+    if (!videoRes.data) throw new Error("Vídeo não encontrado.");
     return { video: videoRes.data, clips: clipsRes.data ?? [] };
   });
 
@@ -261,7 +261,7 @@ export const updateVideo = createServerFn({ method: "POST" })
       patch["transcript"] = transcript || null;
       patch["transcript_source"] = transcript ? "user" : null;
       patch["status"] = transcript ? "pending" : "awaiting_transcript";
-      patch["error_message"] = transcript ? null : "Add the transcript so the AI can find the best moments.";
+      patch["error_message"] = transcript ? null : "Adicione a transcrição para a IA encontrar os melhores momentos.";
     }
     const { error } = await context.supabase.from("videos").update(patch as never).eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -289,7 +289,7 @@ export const analyzeVideo = createServerFn({ method: "POST" })
         id: z.string().uuid(),
         clipCount: z.number().int().min(1).max(20).default(5),
         lengthPreset: z.enum(["short", "medium", "long", "auto"]).default("auto"),
-        language: z.string().trim().min(2).max(40).default("the same language as the transcript"),
+        language: z.string().trim().min(2).max(40).default("português de Portugal"),
         replaceExisting: z.boolean().default(true),
       })
       .parse(data),
@@ -299,7 +299,7 @@ export const analyzeVideo = createServerFn({ method: "POST" })
 
     const { data: video, error } = await supabase.from("videos").select("*").eq("id", data.id).maybeSingle();
     if (error) throw new Error(error.message);
-    if (!video) throw new Error("Video not found.");
+    if (!video) throw new Error("Vídeo não encontrado.");
 
     const transcript = video.transcript?.trim();
     if (!transcript || transcript.length < 200) {
@@ -307,10 +307,10 @@ export const analyzeVideo = createServerFn({ method: "POST" })
         .from("videos")
         .update({
           status: "awaiting_transcript",
-          error_message: "The transcript is missing or too short to analyze.",
+          error_message: "A transcrição está em falta ou é demasiado curta para analisar.",
         })
         .eq("id", video.id);
-      throw new Error("Add the full transcript of this video before running the analysis.");
+      throw new Error("Adicione a transcrição completa deste vídeo antes de executar a análise.");
     }
 
     const { data: profile } = await supabase
@@ -325,7 +325,7 @@ export const analyzeVideo = createServerFn({ method: "POST" })
     );
     if ((profile?.credits_minutes ?? 0) < estimatedMinutes) {
       throw new Error(
-        `Not enough processing minutes left. This video needs about ${estimatedMinutes} minutes.`,
+        `Não tem minutos de processamento suficientes. Este vídeo necessita de cerca de ${estimatedMinutes} minutos.`,
       );
     }
 
@@ -376,7 +376,7 @@ export const analyzeVideo = createServerFn({ method: "POST" })
         video_id: video.id,
         kind: "analysis",
         minutes_used: estimatedMinutes,
-        note: `${rows.length} clips found`,
+        note: `${rows.length} clipes encontrados`,
       });
       await supabase
         .from("profiles")
@@ -385,7 +385,7 @@ export const analyzeVideo = createServerFn({ method: "POST" })
 
       return { clips: rows.length, minutesUsed: estimatedMinutes };
     } catch (err) {
-      const message = err instanceof Error ? err.message : "The analysis failed.";
+      const message = err instanceof Error ? err.message : "A análise falhou.";
       await supabase.from("videos").update({ status: "failed", error_message: message }).eq("id", video.id);
       throw new Error(message);
     }

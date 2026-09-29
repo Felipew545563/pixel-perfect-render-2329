@@ -42,15 +42,15 @@ export const SOURCE_LABELS: Record<VideoSource, string> = {
   youtube: "YouTube",
   twitch: "Twitch",
   vimeo: "Vimeo",
-  other: "Other link",
+  other: "Outra ligação",
 };
 
 export const VIDEO_STATUS_LABELS: Record<string, string> = {
-  pending: "Pending",
-  awaiting_transcript: "Needs transcript",
-  analyzing: "Analyzing",
-  completed: "Completed",
-  failed: "Failed",
+  pending: "Pendente",
+  awaiting_transcript: "Requer transcrição",
+  analyzing: "Em análise",
+  completed: "Concluído",
+  failed: "Falhou",
 };
 
 export function formatTimecode(totalSeconds: number): string {
