@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Outlet, Link, useNavigate, useRouterState, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
@@ -9,6 +9,7 @@ import {
   LogOut,
   Gauge,
 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -17,6 +18,12 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated")({
+  ssr: false,
+  beforeLoad: async () => {
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data.user) throw redirect({ to: "/auth" });
+    return { user: data.user };
+  },
   component: AuthenticatedLayout,
 });
 
@@ -30,30 +37,25 @@ const NAV = [
 ] as const;
 
 function AuthenticatedLayout() {
-  const { session, loading, user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const [tourOpen, setTourOpen] = useState(false);
-  const [tourChecked, setTourChecked] = useState(false);
 
   useEffect(() => {
-    if (!loading && !session) navigate({ to: "/auth" });
-    if (!loading && session && !tourChecked) {
-      setTourChecked(true);
-      try {
-        if (!localStorage.getItem(TOUR_STORAGE_KEY)) setTourOpen(true);
-      } catch {
-        // storage unavailable — don't block the app
-      }
+    try {
+      if (!localStorage.getItem(TOUR_STORAGE_KEY)) setTourOpen(true);
+    } catch {
+      // storage unavailable — don't block the app
     }
-  }, [loading, session, navigate, tourChecked]);
+  }, []);
 
-  if (loading || !session) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
-        A carregar o seu espaço de trabalho…
-      </div>
-    );
+  async function handleSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
   }
 
   return (
@@ -90,10 +92,7 @@ function AuthenticatedLayout() {
             variant="ghost"
             size="sm"
             className="mt-2 w-full justify-start px-2"
-            onClick={async () => {
-              await supabase.auth.signOut();
-              navigate({ to: "/auth" });
-            }}
+            onClick={handleSignOut}
           >
             <LogOut className="mr-2 size-4" /> Terminar sessão
           </Button>

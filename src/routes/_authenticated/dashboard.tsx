@@ -1,11 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus } from "lucide-react";
 
 import { getOverview } from "@/lib/studio.functions";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ImportLinkForm } from "@/components/ImportLinkForm";
 import { formatDuration, formatTimecode, SOURCE_LABELS, VIDEO_STATUS_LABELS } from "@/lib/sources";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -28,17 +27,15 @@ function Painel() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Painel</h1>
-          <p className="text-sm text-muted-foreground">Tudo o que processou até ao momento.</p>
-        </div>
-        <Button asChild size="lg">
-          <Link to="/create">
-            <Plus className="mr-1 size-4" /> Criar clipes
-          </Link>
-        </Button>
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Criar clipes a partir de uma ligação</h1>
+        <p className="text-sm text-muted-foreground">
+          Cole aqui a ligação de uma transmissão em direto, podcast ou vídeo longo para obter cortes verticais para
+          Reels, TikTok e Shorts.
+        </p>
       </div>
+
+      <ImportLinkForm compact />
 
       {error && <p className="text-sm text-destructive">{(error as Error).message}</p>}
       {isLoading && <p className="text-sm text-muted-foreground">A carregar…</p>}

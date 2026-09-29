@@ -79,7 +79,7 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && session) navigate({ to: "/dashboard" });
+    if (!loading && session) navigate({ to: "/dashboard", replace: true });
   }, [loading, session, navigate]);
 
   async function handleSubmit(event: React.FormEvent) {
@@ -97,7 +97,7 @@ function AuthPage() {
         });
         if (error) throw error;
         if (data.session) {
-          navigate({ to: "/dashboard" });
+          navigate({ to: "/dashboard", replace: true });
         } else {
           toast.success("Conta criada. Consulte a sua caixa de entrada para confirmar o e-mail.");
           setMode("signin");
@@ -105,7 +105,7 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: "/dashboard" });
+        navigate({ to: "/dashboard", replace: true });
       }
     } catch (error) {
       toast.error(authErrorMessage(error));
@@ -125,7 +125,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    navigate({ to: "/dashboard" });
+    navigate({ to: "/dashboard", replace: true });
   }
 
 
