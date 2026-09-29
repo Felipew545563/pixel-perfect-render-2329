@@ -34,10 +34,11 @@ function AudioPage() {
       </header>
       <AudioExtractor />
       <ol className="space-y-2 rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground">
-        <li>1. Escolha a gravação do direto ou vídeo.</li>
+        <li>1. Cole a ligação da gravação (Twitch, Kick, YouTube, podcast) ou escolha um ficheiro seu.</li>
         <li>2. Escolha «Leve» se for para gerar clipes, ou «Qualidade alta» para guardar o som.</li>
-        <li>3. Clique em «Extrair áudio» e descarregue o ficheiro.</li>
+        <li>3. Clique em «Obter áudio» (ou «Extrair áudio») e descarregue o ficheiro.</li>
         <li>4. Use-o na «Análise automática» da página do vídeo para obter os cortes.</li>
+
       </ol>
     </div>
   );
