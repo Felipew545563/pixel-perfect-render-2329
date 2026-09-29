@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ClipCard, type ClipRow } from "@/components/ClipCard";
+import { ClipExporter } from "@/components/ClipExporter";
 import { SOURCE_LABELS, VIDEO_STATUS_LABELS, formatDuration } from "@/lib/sources";
 
 export const Route = createFileRoute("/_authenticated/videos/$videoId")({
@@ -213,6 +214,8 @@ function VideoDetail() {
           viralidade.
         </p>
       </section>
+
+      {clips.length > 0 && <ClipExporter clips={clips} />}
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
