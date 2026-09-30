@@ -36,27 +36,37 @@ async function streamHlsSegments(playlistUrl: string, start: number, length: num
     return Response.json({ error: "Esse intervalo não existe nesta gravação." }, { status: 422 });
   }
 
-  let index = 0;
+  // Download up to 6 segments in parallel (runtime outbound limit), emitting them in order.
+  const PARALLEL = 6;
+  const fetchSegment = async (url: string): Promise<Uint8Array | null> => {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const seg = await fetch(url, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(30_000) }).catch(
+        () => null,
+      );
+      if (seg?.ok) return new Uint8Array(await seg.arrayBuffer());
+    }
+    return null; // Skip a segment that keeps failing rather than aborting the whole download.
+  };
+  const queue: Promise<Uint8Array | null>[] = [];
+  let next = 0;
+  const fill = () => {
+    while (queue.length < PARALLEL && next < segments.length) queue.push(fetchSegment(segments[next++]!));
+  };
   let sent = 0;
   const stream = new ReadableStream<Uint8Array>({
     async pull(controller) {
-      if (index >= segments.length || sent > MAX_BYTES) {
+      fill();
+      const head = queue.shift();
+      if (!head || sent > MAX_BYTES) {
         controller.close();
         return;
       }
-      const url = segments[index++]!;
-      for (let attempt = 0; attempt < 3; attempt++) {
-        const seg = await fetch(url, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(30_000) }).catch(
-          () => null,
-        );
-        if (seg?.ok) {
-          const chunk = new Uint8Array(await seg.arrayBuffer());
-          sent += chunk.byteLength;
-          controller.enqueue(chunk);
-          return;
-        }
+      const chunk = await head;
+      fill();
+      if (chunk) {
+        sent += chunk.byteLength;
+        controller.enqueue(chunk);
       }
-      // Skip a segment that keeps failing rather than aborting the whole download.
     },
   });
 
