@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { verifyBearerCaller } from "@/lib/api-auth.server";
 import { parsePublicUrl } from "@/lib/media-link.server";
 
-const MAX_BYTES = 400 * 1024 * 1024;
-const MAX_HLS_SECONDS = 3 * 60 * 60;
+const MAX_BYTES = 2048 * 1024 * 1024;
+const MAX_HLS_SECONDS = 12 * 60 * 60;
 const UA =
   "ClipForgeStudio/1.0";
 
